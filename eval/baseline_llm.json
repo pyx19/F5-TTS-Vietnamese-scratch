@@ -1,0 +1,314 @@
+[
+  {
+    "id": "num01",
+    "category": "numbers_units",
+    "text": "Doanh thu quý này đạt 15.5 tỷ USD, tăng trưởng vượt kỳ vọng ban đầu.",
+    "normalized": "doanh thu quý này đạt mười lăm phẩy năm tỷ đô la, tăng trưởng vượt kỳ vọng ban đầu."
+  },
+  {
+    "id": "num02",
+    "category": "numbers_units",
+    "text": "Độ trễ hệ thống giảm xuống còn 200ms sau khi tối ưu hóa.",
+    "normalized": "độ trễ hệ thống giảm xuống còn hai trăm mi li giây sau khi tối ưu hóa."
+  },
+  {
+    "id": "num03",
+    "category": "numbers_units",
+    "text": "Ổ cứng mới có dung lượng 10GB, đủ dùng cho hầu hết tác vụ hàng ngày.",
+    "normalized": "ổ cứng mới có dung lượng mười gb, đủ dùng cho hầu hết tác vụ hàng ngày."
+  },
+  {
+    "id": "num04",
+    "category": "numbers_units",
+    "text": "Doanh nghiệp đặt mục tiêu hoàn thành dự án trước Q3/2024.",
+    "normalized": "doanh nghiệp đặt mục tiêu hoàn thành dự án trước quý ba năm hai nghìn không trăm hai mươi tư."
+  },
+  {
+    "id": "num05",
+    "category": "numbers_units",
+    "text": "Căn cứ văn bản số 123/QĐ-TTg về việc phê duyệt chủ trương đầu tư.",
+    "normalized": "căn cứ văn bản số một trăm hai mươi ba quyết định thủ tướng chính phủ về việc phê duyệt chủ trương đầu tư."
+  },
+  {
+    "id": "num06",
+    "category": "numbers_units",
+    "text": "Card đồ họa mới hỗ trợ 24GB VRAM và băng thông 448 Gbps.",
+    "normalized": "card đồ họa mới hỗ trợ hai mươi tư gb vi a rờ ây em và băng thông bốn trăm bốn mươi tám gbps."
+  },
+  {
+    "id": "num07",
+    "category": "numbers_units",
+    "text": "Tỷ lệ tăng trưởng kép hàng năm đạt 22.4%, cao nhất trong 5 năm qua.",
+    "normalized": "tỷ lệ tăng trưởng kép hàng năm đạt hai mươi hai phẩy bốn phần trăm, cao nhất trong năm năm qua."
+  },
+  {
+    "id": "num08",
+    "category": "numbers_units",
+    "text": "Mạng 5G mới đạt tốc độ tải xuống 900 Mbps trong điều kiện lý tưởng.",
+    "normalized": "mạng năm gờ mới đạt tốc độ tải xuống chín trăm mbps trong điều kiện lý tưởng."
+  },
+  {
+    "id": "num09",
+    "category": "numbers_units",
+    "text": "Trung tâm dữ liệu vận hành liên tục 24/7 để đảm bảo dịch vụ không gián đoạn.",
+    "normalized": "trung tâm dữ liệu vận hành liên tục hai mươi tư bảy để đảm bảo dịch vụ không gián đoạn."
+  },
+  {
+    "id": "num10",
+    "category": "numbers_units",
+    "text": "Video được ghi hình ở tốc độ 60 fps với độ phân giải 4K.",
+    "normalized": "video được ghi hình ở tốc độ sáu mươi fps với độ phân giải 4k."
+  },
+  {
+    "id": "num11",
+    "category": "numbers_units",
+    "text": "Ngân sách đầu tư năm 2024 tăng 10.000 tỷ đồng so với năm trước.",
+    "normalized": "ngân sách đầu tư năm hai nghìn không trăm hai mươi tư tăng mười nghìn tỷ đồng so với năm trước."
+  },
+  {
+    "id": "num12",
+    "category": "numbers_units",
+    "text": "Bộ xử lý mới chạy ở xung nhịp 3.5 GHz, tiêu thụ điện năng thấp hơn 15%.",
+    "normalized": "bộ xử lý mới chạy ở xung nhịp ba phẩy năm ghz, tiêu thụ điện năng thấp hơn mười lăm phần trăm."
+  },
+  {
+    "id": "admin01",
+    "category": "admin_abbrev",
+    "text": "UBND tỉnh đã ban hành kế hoạch triển khai theo chỉ đạo của HĐND.",
+    "normalized": "ủy ban nhân dân tỉnh đã ban hành kế hoạch triển khai theo chỉ đạo của hội đồng nhân dân."
+  },
+  {
+    "id": "admin02",
+    "category": "admin_abbrev",
+    "text": "Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị.",
+    "normalized": "căn cứ nghị quyết số ba mươi sáu nghị quyết trung ương ngày một tháng bảy năm hai nghìn không trăm mười bốn của bộ chính trị."
+  },
+  {
+    "id": "admin03",
+    "category": "admin_abbrev",
+    "text": "Bộ Thông tin và Truyền thông chủ trì phối hợp với UBND các tỉnh, thành phố.",
+    "normalized": "bộ thông tin và truyền thông chủ trì phối hợp với ủy ban nhân dân các tỉnh, thành phố."
+  },
+  {
+    "id": "admin04",
+    "category": "admin_abbrev",
+    "text": "Theo QĐ 15/2023 của UBND tỉnh, các đơn vị phải báo cáo tiến độ hàng quý.",
+    "normalized": "theo quyết định mười lăm hai nghìn không trăm hai mươi ba của ủy ban nhân dân tỉnh, các đơn vị phải báo cáo tiến độ hàng quý."
+  },
+  {
+    "id": "admin05",
+    "category": "admin_abbrev",
+    "text": "Nghị định số 64/2007/NĐ-CP quy định chi tiết về ứng dụng công nghệ thông tin.",
+    "normalized": "nghị định số sáu mươi tư hai nghìn không trăm lẻ bảy nghị định chính phủ quy định chi tiết về ứng dụng công nghệ thông tin."
+  },
+  {
+    "id": "admin06",
+    "category": "admin_abbrev",
+    "text": "MTTQ Việt Nam phối hợp cùng các cơ quan liên quan giám sát thực hiện.",
+    "normalized": "mặt trận tổ quốc việt nam phối hợp cùng các cơ quan liên quan giám sát thực hiện."
+  },
+  {
+    "id": "admin07",
+    "category": "admin_abbrev",
+    "text": "GS. Nguyễn Văn A cùng PGS. Trần Thị B đã có báo cáo quan trọng tại hội nghị.",
+    "normalized": "giáo sư. nguyễn văn âi cùng phó giáo sư. trần thị b đã có báo cáo quan trọng tại hội nghị."
+  },
+  {
+    "id": "admin08",
+    "category": "admin_abbrev",
+    "text": "TS. Lê Văn C, ThS. Phạm Thị D và BS. Hoàng Văn E cùng tham gia hội đồng thẩm định.",
+    "normalized": "tiến sĩ. lê văn thạc sĩ. phạm thị d và bác sĩ. hoàng văn e cùng tham gia hội đồng thẩm định."
+  },
+  {
+    "id": "admin09",
+    "category": "admin_abbrev",
+    "text": "Ủy ban nhân dân các tỉnh, thành phố trực thuộc Trung ương có trách nhiệm bố trí nguồn vốn.",
+    "normalized": "ủy ban nhân dân các tỉnh, thành phố trực thuộc trung ương có trách nhiệm bố trí nguồn vốn."
+  },
+  {
+    "id": "admin10",
+    "category": "admin_abbrev",
+    "text": "Xét đề nghị tại Tờ trình số 102/TTr-BTTTT và Báo cáo số 45/BC-BTP.",
+    "normalized": "xét đề nghị tại tờ trình số một trăm lẻ hai thông tư bi ti ti ti ti và báo cáo số bốn mươi lăm báo cáo bi ti pi."
+  },
+  {
+    "id": "admin11",
+    "category": "admin_abbrev",
+    "text": "Quốc hội đã thông qua Nghị quyết số 57/2022/QH15 về đầu tư dự án trọng điểm.",
+    "normalized": "quốc hội đã thông qua nghị quyết số năm mươi bảy hai nghìn không trăm hai mươi hai quh mười lăm về đầu tư dự án trọng điểm."
+  },
+  {
+    "id": "admin12",
+    "category": "admin_abbrev",
+    "text": "Điều 1 Chương II quy định rõ trách nhiệm của các bên liên quan tại Điều 3.",
+    "normalized": "điều một chương hai quy định rõ trách nhiệm của các bên liên quan tại điều ba."
+  },
+  {
+    "id": "tech01",
+    "category": "tech_abbrev",
+    "text": "Hệ thống AI và Machine Learning giúp CEO ra quyết định nhanh hơn.",
+    "normalized": "hệ thống ây ai và machine learning giúp xi i âu ai ra quyết định nhanh hơn."
+  },
+  {
+    "id": "tech02",
+    "category": "tech_abbrev",
+    "text": "Generative AI đang phát triển mạnh trong lĩnh vực IT.",
+    "normalized": "generative ây ai đang phát triển mạnh trong lĩnh vực ai ti."
+  },
+  {
+    "id": "tech03",
+    "category": "tech_abbrev",
+    "text": "Các tập đoàn đang đầu tư mạnh vào nghiên cứu các hệ thống LLM tiên tiến.",
+    "normalized": "các tập đoàn đang đầu tư mạnh vào nghiên cứu các hệ thống eo eo em tiên tiến."
+  },
+  {
+    "id": "tech04",
+    "category": "tech_abbrev",
+    "text": "API mới cho phép tích hợp nhanh hơn giữa các dịch vụ Cloud.",
+    "normalized": "ây pi ai mới cho phép tích hợp nhanh hơn giữa các dịch vụ cloud."
+  },
+  {
+    "id": "tech05",
+    "category": "tech_abbrev",
+    "text": "CPU và GPU thế hệ mới giúp tăng hiệu năng xử lý dữ liệu lớn.",
+    "normalized": "xi pi iu và gờ pi iu thế hệ mới giúp tăng hiệu năng xử lý dữ liệu lớn."
+  },
+  {
+    "id": "tech06",
+    "category": "tech_abbrev",
+    "text": "SDK hỗ trợ giao thức HTTP và URL rút gọn cho nhà phát triển.",
+    "normalized": "ét đi cây hỗ trợ giao thức ếch ti ti pi và iu a rờ eo rút gọn cho nhà phát triển."
+  },
+  {
+    "id": "tech07",
+    "category": "tech_abbrev",
+    "text": "ROI của chiến dịch marketing tăng nhờ tối ưu KPI theo từng giai đoạn.",
+    "normalized": "a rờ âu ai của chiến dịch marketing tăng nhờ tối ưu cây pi ai theo từng giai đoạn."
+  },
+  {
+    "id": "tech08",
+    "category": "tech_abbrev",
+    "text": "GDP tăng trưởng ổn định trong khi CAGR ngành công nghệ đạt mức cao.",
+    "normalized": "gờ đi pi tăng trưởng ổn định trong khi xi ây gờ a rờ ngành công nghệ đạt mức cao."
+  },
+  {
+    "id": "tech09",
+    "category": "tech_abbrev",
+    "text": "Đội ngũ HR đang tuyển dụng thêm kỹ sư cho dự án USD-funded mới.",
+    "normalized": "đội ngũ ếch a rờ đang tuyển dụng thêm kỹ sư cho dự án iu ét đi funded mới."
+  },
+  {
+    "id": "tech10",
+    "category": "tech_abbrev",
+    "text": "VRAM lớn hơn giúp mô hình AI xử lý tác vụ phức tạp mượt mà hơn.",
+    "normalized": "vi a rờ ây em lớn hơn giúp mô hình ây ai xử lý tác vụ phức tạp mượt mà hơn."
+  },
+  {
+    "id": "tech11",
+    "category": "tech_abbrev",
+    "text": "COVID đã thúc đẩy chuyển đổi số nhanh hơn tại nhiều tổ chức ASEAN và NATO.",
+    "normalized": "xi âu vi ai đi đã thúc đẩy chuyển đổi số nhanh hơn tại nhiều tổ chức cô vít và na tô."
+  },
+  {
+    "id": "tech12",
+    "category": "tech_abbrev",
+    "text": "SaaS platform mới hỗ trợ tích hợp IoT và OAuth cho doanh nghiệp.",
+    "normalized": "saas platform mới hỗ trợ tích hợp ai âu ti và âu âu ếch cho doanh nghiệp."
+  },
+  {
+    "id": "code01",
+    "category": "code_switching",
+    "text": "Mô hình được triển khai theo hình thức On-premise thay vì Cloud API.",
+    "normalized": "mô hình được triển khai theo hình thức on premise thay vì cloud ây pi ai."
+  },
+  {
+    "id": "code02",
+    "category": "code_switching",
+    "text": "Đội ngũ sẽ review lại toàn bộ pipeline trước khi deploy lên production.",
+    "normalized": "đội ngũ sẽ review lại toàn bộ pipeline trước khi deploy lên production."
+  },
+  {
+    "id": "code03",
+    "category": "code_switching",
+    "text": "Hệ thống Text-to-Speech hoạt động ổn định sau đợt fine-tuning gần đây.",
+    "normalized": "hệ thống text to speech hoạt động ổn định sau đợt fine tuning gần đây."
+  },
+  {
+    "id": "code04",
+    "category": "code_switching",
+    "text": "Cơ chế End-to-end Encryption giúp bảo vệ dữ liệu người dùng tốt hơn.",
+    "normalized": "cơ chế end to end encryption giúp bảo vệ dữ liệu người dùng tốt hơn."
+  },
+  {
+    "id": "code05",
+    "category": "code_switching",
+    "text": "Backend framework mới hỗ trợ workflow phức tạp một cách hiệu quả.",
+    "normalized": "backend framework mới hỗ trợ workflow phức tạp một cách hiệu quả."
+  },
+  {
+    "id": "code06",
+    "category": "code_switching",
+    "text": "Ứng dụng trí tuệ nhân tạo tạo sinh (Generative AI) đang được thử nghiệm rộng rãi.",
+    "normalized": "ứng dụng trí tuệ nhân tạo tạo sinh generative ây ai đang được thử nghiệm rộng rãi."
+  },
+  {
+    "id": "code07",
+    "category": "code_switching",
+    "text": "Doanh nghiệp áp dụng mô hình Hybrid Cloud để tối ưu chi phí vận hành.",
+    "normalized": "doanh nghiệp áp dụng mô hình hybrid cloud để tối ưu chi phí vận hành."
+  },
+  {
+    "id": "code08",
+    "category": "code_switching",
+    "text": "Trải nghiệm người dùng (User Experience - UX) là ưu tiên hàng đầu của đội thiết kế.",
+    "normalized": "trải nghiệm người dùng user experience iu ích là ưu tiên hàng đầu của đội thiết kế."
+  },
+  {
+    "id": "code09",
+    "category": "code_switching",
+    "text": "Các \"ốc đảo dữ liệu\" (Data Silos) đang gây nghẽn mạch dòng chảy thông tin nội bộ.",
+    "normalized": "các \"ốc đảo dữ liệu\" data silos đang gây nghẽn mạch dòng chảy thông tin nội bộ."
+  },
+  {
+    "id": "code10",
+    "category": "code_switching",
+    "text": "Startup công nghệ tập trung phát triển nền tảng training và inference riêng.",
+    "normalized": "startup công nghệ tập trung phát triển nền tảng training và inference riêng."
+  },
+  {
+    "id": "brand01",
+    "category": "proper_nouns",
+    "text": "ViVoice cho phép tổng hợp giọng nói tiếng Việt tự nhiên hơn ChatGPT đọc văn bản.",
+    "normalized": "vivoice cho phép tổng hợp giọng nói tiếng việt tự nhiên hơn chat gờ pi ti đọc văn bản."
+  },
+  {
+    "id": "brand02",
+    "category": "proper_nouns",
+    "text": "RTX 5060 là lựa chọn phổ biến cho các tác vụ huấn luyện mô hình vừa và nhỏ.",
+    "normalized": "a rờ ti ích năm nghìn không trăm sáu mươi là lựa chọn phổ biến cho các tác vụ huấn luyện mô hình vừa và nhỏ."
+  },
+  {
+    "id": "brand03",
+    "category": "proper_nouns",
+    "text": "GPT-4o hỗ trợ xử lý đa phương thức tốt hơn các phiên bản trước.",
+    "normalized": "gờ pi 4o hỗ trợ xử lý đa phương thức tốt hơn các phiên bản trước."
+  },
+  {
+    "id": "brand04",
+    "category": "proper_nouns",
+    "text": "F5-TTS là một trong những mô hình tổng hợp giọng nói mã nguồn mở nổi bật.",
+    "normalized": "f5-et tts là một trong những mô hình tổng hợp giọng nói mã nguồn mở nổi bật."
+  },
+  {
+    "id": "brand05",
+    "category": "proper_nouns",
+    "text": "M2 Pro mang lại hiệu năng ổn định cho các tác vụ suy luận trên thiết bị di động.",
+    "normalized": "m2 pro mang lại hiệu năng ổn định cho các tác vụ suy luận trên thiết bị di động."
+  },
+  {
+    "id": "brand06",
+    "category": "proper_nouns",
+    "text": "DevOps kết hợp cùng ChatGPT giúp quy trình phát triển phần mềm nhanh hơn.",
+    "normalized": "devops kết hợp cùng chat gờ pi ti giúp quy trình phát triển phần mềm nhanh hơn."
+  }
+]

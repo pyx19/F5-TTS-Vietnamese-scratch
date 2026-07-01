@@ -1,0 +1,57 @@
+# ============================================================
+# docker-compose.yml — F5-TTS-Vietnamese
+#
+# Sử dụng:
+#   docker compose up -d          # chạy nền
+#   docker compose logs -f        # xem log
+#   docker compose down           # dừng
+# ============================================================
+
+services:
+  f5tts:
+    build: .                          # dùng khi build local (bỏ dòng này trên server)
+    image: phucvh145/f5tts-vi:cu121   # tên trên Docker Hub
+    container_name: f5tts-vi
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    ports:
+      - "7860:7860"
+
+    volumes:
+      - ./tests:/app/tests          # output wav ra ngoài container
+
+    environment:
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      GRADIO_ANALYTICS_ENABLED: "0"
+      PYTHONIOENCODING: "utf-8"
+      CUDA_VISIBLE_DEVICES: "0"
+      # LLM server — trỏ vào server bạn tự host (OpenAI-compatible: Ollama/vLLM/
+      # LM Studio/Xinference...). Qwen2.5:3b trên Ollama laptop chỉ là placeholder
+      # mặc định trong code — đổi 3 biến dưới đây để trỏ sang LLM thật của bạn.
+      OLLAMA_URL: "http://YOUR_LLM_HOST:PORT/v1"
+      OLLAMA_MODEL: "your-model-name"
+      # Nếu server yêu cầu API key, set ở đây:
+      LLM_API_KEY: ""
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"

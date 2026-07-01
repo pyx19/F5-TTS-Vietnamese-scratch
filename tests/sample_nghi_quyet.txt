@@ -1,0 +1,28 @@
+Về việc Đẩy mạnh Chuyển đổi số và Phát triển Hạ tầng Dữ liệu Quốc gia
+CHÍNH PHỦ
+
+Căn cứ Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015; Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019;
+
+Căn cứ Nghị quyết số 57/2022/QH15 ngày 16 tháng 6 năm 2022 của Quốc hội về chủ trương đầu tư dự án trọng điểm quốc gia;
+
+Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị về đẩy mạnh ứng dụng, phát triển công nghệ thông tin đáp ứng yêu cầu phát triển bền vững và hội nhập quốc tế;  
+
+Xét đề nghị của Bộ trưởng Bộ Thông tin và Truyền thông tại Tờ trình số 102/TTr-BTTTT và ý kiến thẩm định của Bộ Tư pháp tại Báo cáo số 45/BC-BTP,
+
+QUYẾT NGHỊ:
+Điều 1. Mục tiêu và Thống nhất Nhận thức
+Thống nhất triển khai chiến lược dịch chuyển toàn bộ hệ thống lưu trữ truyền thống sang mô hình điện toán đám mây (Cloud Computing), ưu tiên phát triển hạ tầng lai (Hybrid Cloud) tại các cơ quan quản lý nhà nước. Mục tiêu cốt lõi là tối ưu hóa năng lực xử lý dữ liệu lớn (Big Data) và đảm bảo an toàn thông tin theo tiêu chuẩn Zero Trust Architecture (ZTA).
+
+Điều 2. Các Nhiệm vụ và Giải pháp Trọng tâm
+
+Tái cấu trúc quy trình nghiệp vụ: Khẩn trương ban hành các hướng dẫn kỹ thuật về giao diện lập trình ứng dụng (API) mở nhằm đồng bộ hóa việc chia sẻ dữ liệu liên thông giữa các bộ, ngành. Quyết liệt xóa bỏ các "ốc đảo dữ liệu" (Data Silos) đang gây nghẽn mạch dòng chảy thông tin.
+
+Ứng dụng công nghệ đột phá: Khuyến khích các doanh nghiệp công nghệ trong nước áp dụng trí tuệ nhân tạo tạo sinh (Generative AI) và dữ liệu chuỗi khối (Blockchain) để nâng cao hiệu quả cung cấp dịch vụ công trực tuyến, hướng tới trải nghiệm người dùng (User Experience - UX) tối ưu nhất.
+
+An ninh mạng và Bảo mật: Toàn bộ hệ thống trung tâm dữ liệu quốc gia phải thiết lập cơ chế giám sát tự động 24/7 thông qua Trung tâm điều hành an ninh mạng (SOC), chủ động phòng chống các cuộc tấn công mã hóa dữ liệu tống tiền (Ransomware) và giảm thiểu nguy cơ rò rỉ dữ liệu hành chính.
+
+Điều 3. Tổ chức Thực hiện
+
+Bộ Thông tin và Truyền thông chủ trì, phối hợp với các cơ quan liên quan căn cứ Nghị định số 64/2007/NĐ-CP và các quy định tại Mã số văn bản 07/2024/QH15 để xây dựng bộ tiêu chí đánh giá chỉ số chuyển đổi số (DTI) cấp tỉnh, thành phố.
+
+Ủy ban nhân dân các tỉnh, thành phố trực thuộc Trung ương có trách nhiệm bố trí nguồn vốn đối ứng, huy động nguồn lực theo phương thức hợp tác công tư (PPP) để hoàn thiện hạ tầng kết nối 5G tại các khu công nghiệp trọng điểm trước quý IV.

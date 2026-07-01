@@ -1,0 +1,31 @@
+# Dataset và checkpoint (quá lớn để push)
+/data/your_dataset/
+/data/your_training_dataset/
+/data/your_training_dataset_non_preprocessed/
+/ckpts/
+/preprocess
+
+# Virtual environments
+.f5/
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Generated audio output
+tests/*.wav
+
+# Bước 8 — diskcache cho LLM normalize results
+/.cache/
+
+# Logs
+gradio.log
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

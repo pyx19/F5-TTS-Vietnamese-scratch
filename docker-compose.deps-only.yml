@@ -1,0 +1,87 @@
+# ============================================================
+# docker-compose.deps-only.yml — F5-TTS-Vietnamese (biến thể mount-code)
+#
+# Dùng với Dockerfile.deps-only: image chỉ chứa model weights + dependencies,
+# code ứng dụng được mount từ thư mục đã git clone bên ngoài — sửa code trực
+# tiếp trên máy đích (vd VM công ty), chỉ cần restart container, KHÔNG rebuild.
+#
+# Chuẩn bị (một lần, khi còn mạng):
+#   git clone <repo-url> F5-TTS-Vietnamese-scratch
+#   # copy cả thư mục này sang máy đích nếu máy đích không có mạng
+#
+# Sử dụng trên máy đích:
+#   cd F5-TTS-Vietnamese-scratch
+#   docker compose -f docker-compose.deps-only.yml up -d
+#   docker compose -f docker-compose.deps-only.yml logs -f
+#
+# Sửa code xong:
+#   docker compose -f docker-compose.deps-only.yml restart
+# ============================================================
+
+services:
+  f5tts:
+    build:
+      context: .
+      dockerfile: Dockerfile.deps-only
+    image: phucvh145/f5tts-vi-deps:cu121   # đổi theo tên image trên Docker Hub của bạn
+    container_name: f5tts-vi-deps
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    ports:
+      - "7860:7860"
+
+    working_dir: /app
+
+    volumes:
+      # Mount TOÀN BỘ code đã git-clone vào /app — sửa trực tiếp trên máy đích.
+      # Model weights KHÔNG nằm trong thư mục này, nên không bị mount đè —
+      # chúng ở /opt/f5tts/ckpts bên trong image (xem F5TTS_CKPTS_DIR bên dưới).
+      - ./:/app
+      # Output audio riêng ra ngoài container (tùy chọn, đã nằm trong ./tests
+      # nếu mount cả thư mục ở trên, dòng này chỉ cần nếu muốn tách output ra
+      # ngoài đường dẫn code, vd ổ đĩa khác):
+      # - /path/to/output:/app/tests
+
+    environment:
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+      GRADIO_ANALYTICS_ENABLED: "0"
+      PYTHONIOENCODING: "utf-8"
+      CUDA_VISIBLE_DEVICES: "0"
+      # Model weights baked sẵn trong image ở đây — KHÔNG đổi trừ khi bạn tự
+      # sửa Dockerfile.deps-only.
+      F5TTS_CKPTS_DIR: /opt/f5tts/ckpts
+
+      # Tùy chọn: nếu KHÔNG mount ./:/app ở trên mà muốn container tự kéo code
+      # (cần container reach được Git remote — nội bộ/qua proxy công ty):
+      # GIT_REPO_URL: "https://github.com/your-org/F5-TTS-Vietnamese-scratch.git"
+      # GIT_REPO_BRANCH: "main"
+
+      # LLM server tự host — Qwen2.5:3b trên Ollama laptop chỉ là placeholder mặc
+      # định trong code, đổi 3 biến dưới để trỏ sang LLM thật (Ollama/vLLM/LM
+      # Studio/Xinference... đều dùng chung API OpenAI-compatible).
+      OLLAMA_URL: "http://YOUR_LLM_HOST:PORT/v1"
+      OLLAMA_MODEL: "your-model-name"
+      LLM_API_KEY: ""
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"

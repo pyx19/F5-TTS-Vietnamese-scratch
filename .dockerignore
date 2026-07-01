@@ -1,0 +1,75 @@
+# ============================================================
+# .dockerignore — loại các file không cần thiết ra khỏi Docker build context
+# Giảm build context từ ~12GB xuống còn ~100MB
+# ============================================================
+
+# ── Models được COPY vào image (baked in — không cần USB riêng) ──
+# ckpts/ được include hoàn toàn, nhưng loại HF cache metadata
+ckpts/**/.cache/
+ckpts/*/.cache/
+
+# ── Files cũ không còn dùng ──────────────────────────────────
+infer_hybrid.py
+infer.sh
+
+# ── Virtual environments ─────────────────────────────────────
+.venv/
+.f5/
+venv/
+env/
+__pypackages__/
+
+# ── Python cache ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# ── Generated audio outputs ───────────────────────────────────
+tests/*.wav
+tests/*.mp3
+gradio.log
+
+# ── Git ──────────────────────────────────────────────────────
+.git/
+.gitignore
+.gitattributes
+
+# ── IDE / OS ─────────────────────────────────────────────────
+.cursor/
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Logs & temp ──────────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+wandb/
+runs/
+outputs/
+
+# ── Docs (không cần trong container) ────────────────────────
+*.md
+docs/
+notebooks/
+
+# ── Training artifacts (không dùng cho inference) ─────────────
+fine_tuning.sh
+check_vocab_pretrained.py
+extend_embedding_pretrained.py
+convert_sr.py
+prepare_metadata.py
+prepare_csv_wavs.py
+
+# ── Plans / cursor internal ───────────────────────────────────
+.cursor/
+*.plan.md
