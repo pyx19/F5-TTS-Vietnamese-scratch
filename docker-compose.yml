@@ -9,8 +9,14 @@
 
 services:
   f5tts:
-    build: .                          # dùng khi build local (bỏ dòng này trên server)
-    image: phucvh145/f5tts-vi:cu121   # tên trên Docker Hub
+    build:
+      context: .                      # dùng khi build local (bỏ cả block build trên server)
+      # ckpts/ trong project là NTFS junction — Docker không đọc xuyên qua được
+      # khi build context (WSL2/Hyper-V backend). Trỏ thẳng vào ckpts thật ở
+      # project gốc, khớp với "COPY --from=ckpts ./ckpts/" trong Dockerfile.
+      additional_contexts:
+        ckpts: ../F5-TTS-Vietnamese/ckpts
+    image: phucvh145/f5tts-vi:cu121-full   # tên trên Docker Hub
     container_name: f5tts-vi
 
     deploy:

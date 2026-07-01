@@ -158,15 +158,62 @@ môi trường trên (nếu có) — sửa trực tiếp trên UI cũng được
 Có **2 cách build**, tùy nhu cầu có cần sửa code sau khi deploy hay không. Dùng chung
 `docker-entrypoint.sh`, khác nhau ở việc code có nằm trong image hay không.
 
+**Checklist việc của máy nhà** (trước khi coi là xong, để giao cho máy công ty):
+
+- [x] Push code lên GitHub
+- [ ] Build image (cả 2 variant nếu cần) — dùng đúng `--build-context ckpts=...`
+- [ ] **Smoke-test bằng GPU thật ngay tại máy nhà** trước khi push (máy này có GPU +
+      `nvidia` runtime, tận dụng để tránh push image lỗi lên registry công khai):
+      `docker run --gpus all -p 7860:7860 <image>` rồi mở `http://localhost:7860`
+      kiểm tra UI lên đúng, thử tổng hợp thử 1 câu.
+- [ ] Push image lên Docker Hub
+- [ ] (Tùy chọn) Tag thêm `latest` trỏ vào bản full-bake
+
+Việc pull/chạy trên máy công ty (phần "Sau khi pull" bên dưới) là việc của máy đích,
+không phải việc của máy nhà.
+
 ### Cách 1 — Full bake (`Dockerfile` + `docker-compose.yml`)
 
 Bake toàn bộ: code + model weights (~10GB) + dependencies vào 1 image. Đơn giản nhất,
 nhưng sửa code phải rebuild image.
 
 ```bash
-docker build -t f5tts-vi:latest .
-docker push <user>/f5tts-vi:cu121
+# Chạy từ trong thư mục F5-TTS-Vietnamese-scratch:
+docker build --build-context ckpts=../F5-TTS-Vietnamese/ckpts \
+  -t phucvh145/f5tts-vi:cu121-full .
+docker push phucvh145/f5tts-vi:cu121-full
 ```
+
+> **Lưu ý quan trọng:** `ckpts/` trong project là **NTFS junction** trỏ về
+> `../F5-TTS-Vietnamese/ckpts` (để không copy trùng ~10GB weights). Docker Desktop
+> (WSL2/Hyper-V backend) **không đọc xuyên qua được junction** khi build context — sẽ
+> báo lỗi `failed to calculate checksum ... "/ckpts": not found` nếu build bằng
+> `docker build -t ... .` thông thường. Bắt buộc phải dùng `--build-context
+> ckpts=../F5-TTS-Vietnamese/ckpts` (trỏ thẳng vào thư mục thật, không qua junction)
+> như lệnh trên. `docker compose build`/`up --build` đã tự có cấu hình này qua
+> `additional_contexts` trong `docker-compose.yml`, không cần thêm flag gì.
+
+**Sau khi `docker pull`/`docker load` xong trên máy đích, chạy ngay bằng 1 trong 2 cách:**
+
+```bash
+# Cách A — không cần mang theo bất kỳ file nào của repo (mọi thứ đã baked trong image):
+docker run --gpus all -d --name f5tts-vi -p 7860:7860 \
+  -e OLLAMA_URL=http://YOUR_LLM_HOST:PORT/v1 \
+  -e OLLAMA_MODEL=your-model-name \
+  -e LLM_API_KEY="" \
+  -v /path/to/output:/app/tests \
+  phucvh145/f5tts-vi:cu121-full
+
+# Cách B — mang theo mỗi file docker-compose.yml (tiện chỉnh env var, healthcheck,
+# restart policy, logging đã cấu hình sẵn). Trên máy đích, XÓA cả block `build:`
+# (chỉ giữ `image:`) vì máy đích không có ../F5-TTS-Vietnamese/ckpts để build —
+# và cũng không cần build, image đã pull sẵn rồi:
+docker compose up -d
+docker compose logs -f
+```
+
+Sau đó mở `http://<IP-máy-đích>:7860` để dùng Gradio UI, hoặc gọi CLI qua
+`docker exec -it f5tts-vi python infer_vivoice.py --ref_audio ref.wav --ref_text "..." --gen_text "..." --llm_normalize`.
 
 **Về câu hỏi "bake xong đẩy Docker Hub, pull xuống máy công ty không có mạng thì có
 vấn đề gì không":**
@@ -202,21 +249,33 @@ KHÔNG cần rebuild/re-push image — chỉ cần `docker compose restart`.
 
 ```bash
 # 1. Build + push 1 lần (khi model/deps đổi, không cần build lại khi chỉ sửa code)
-docker build -f Dockerfile.deps-only -t <user>/f5tts-vi-deps:cu121 .
-docker push <user>/f5tts-vi-deps:cu121
+# Chạy từ trong thư mục F5-TTS-Vietnamese-scratch — --build-context bắt buộc vì
+# ckpts/ là NTFS junction (xem lưu ý ở Cách 1 phía trên).
+docker build --build-context ckpts=../F5-TTS-Vietnamese/ckpts \
+  -f Dockerfile.deps-only -t phucvh145/f5tts-vi:cu121-deps-only .
+docker push phucvh145/f5tts-vi:cu121-deps-only
 
 # 2. Trên máy có mạng: git clone repo (hoặc copy thư mục này qua USB/SCP nếu máy
 #    công ty không có mạng để tự clone)
 git clone <repo-url> F5-TTS-Vietnamese-scratch
 
-# 3. Trên máy công ty
+# 3. Trên máy công ty — PULL TRƯỚC khi up (quan trọng, xem lưu ý ngay dưới)
 cd F5-TTS-Vietnamese-scratch
-docker pull <user>/f5tts-vi-deps:cu121      # hoặc docker load nếu không có mạng
+docker pull phucvh145/f5tts-vi:cu121-deps-only      # hoặc docker load nếu không có mạng
 docker compose -f docker-compose.deps-only.yml up -d
+docker compose -f docker-compose.deps-only.yml logs -f
 
 # Sửa code xong:
 docker compose -f docker-compose.deps-only.yml restart
 ```
+
+> **Lưu ý:** `docker-compose.deps-only.yml` có `build:` tham chiếu
+> `../F5-TTS-Vietnamese/ckpts` — thư mục này **không tồn tại** trên máy công ty (chỉ
+> clone mỗi `F5-TTS-Vietnamese-scratch`). Không sao cả: Compose chỉ đọc `build:` khi
+> thực sự cần build (image chưa có / chạy `--build`); vì đã `docker pull` trước nên
+> image đã có sẵn local, Compose dùng luôn image đó chứ không cố build. Nếu muốn chắc
+> chắn tuyệt đối, xóa cả block `build:` trong bản compose ở máy công ty, chỉ giữ
+> `image:`.
 
 Cách hoạt động: `docker-compose.deps-only.yml` mount `./:/app` (thư mục code đã clone)
 vào container; model weights nằm ở `/opt/f5tts/ckpts` **bên trong image**, tách biệt

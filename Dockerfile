@@ -7,19 +7,23 @@
 # chạy ngay, KHÔNG sửa code trên máy đó. Nếu cần sửa code sau khi deploy, xem
 # Dockerfile.deps-only (bake model+deps, mount code từ git clone riêng).
 #
-# Build (với internet):
-#   docker build -t f5tts-vi:latest .
+# Build (với internet) — chạy từ trong thư mục F5-TTS-Vietnamese-scratch:
+#   docker build --build-context ckpts=../F5-TTS-Vietnamese/ckpts \
+#     -t phucvh145/f5tts-vi:cu121-full .
+#
+# --build-context trỏ THẲNG vào ckpts thật ở project gốc (không qua junction —
+# xem ghi chú tại dòng COPY --from=ckpts bên dưới, lý do bắt buộc phải làm vậy).
 #
 # Đẩy lên Docker Hub rồi pull xuống máy không có internet:
-#   docker push <user>/f5tts-vi:cu121
+#   docker push phucvh145/f5tts-vi:cu121-full
 #   # trên máy đích (cần Docker + nvidia-container-toolkit + reach Docker Hub,
 #   # hoặc dùng docker save/load nếu máy đích hoàn toàn không có mạng — xem dưới):
-#   docker pull <user>/f5tts-vi:cu121
+#   docker pull phucvh145/f5tts-vi:cu121-full
 #
 # Nếu máy đích không reach được Docker Hub (mạng nội bộ cô lập hoàn toàn):
-#   docker save f5tts-vi:latest | gzip > f5tts-vi.tar.gz   # trên máy build
+#   docker save phucvh145/f5tts-vi:cu121-full | gzip > f5tts-vi-cu121-full.tar.gz
 #   # copy file .tar.gz sang máy đích qua USB/SCP nội bộ, rồi:
-#   docker load < f5tts-vi.tar.gz                          # trên máy đích
+#   docker load < f5tts-vi-cu121-full.tar.gz                # trên máy đích
 #
 # Run (trên server):
 #   docker compose up -d          # dùng docker-compose.yml
@@ -28,7 +32,7 @@
 #     -v /path/to/output:/app/tests \
 #     -e OLLAMA_URL=http://YOUR_LLM_HOST:PORT/v1 \
 #     -e OLLAMA_MODEL=your-model-name \
-#     f5tts-vi:latest
+#     phucvh145/f5tts-vi:cu121-full
 #
 # LƯU Ý: bake xong image đã tự chứa mọi thứ để chạy INFERENCE hoàn toàn offline
 # (HF_HUB_OFFLINE=1). LLM normalize (--llm_normalize) vẫn cần container reach được
@@ -149,7 +153,15 @@ COPY tests/ ./tests/
 
 # ── Bake models vào image (~10GB: vivoice + base + vocos) ────
 # Layer riêng → Docker cache không thay đổi nếu model không đổi.
-COPY ckpts/ ./ckpts/
+#
+# QUAN TRỌNG: ckpts/ trong thư mục project là NTFS JUNCTION trỏ về
+# ../F5-TTS-Vietnamese/ckpts — Docker Desktop (WSL2/Hyper-V backend) KHÔNG đọc
+# xuyên qua được junction khi build context (lỗi "failed to calculate checksum
+# ... not found"). Dùng BuildKit "additional build context" để trỏ THẲNG vào
+# thư mục thật — xem lệnh build ở đầu file này (--build-context
+# ckpts=../F5-TTS-Vietnamese/ckpts). KHÔNG đổi lại thành "COPY ckpts/ ./ckpts/".
+COPY --from=ckpts . ./ckpts/
+RUN find ./ckpts -type d -name ".cache" -prune -exec rm -rf {} + || true
 
 # ── Install the f5_tts package itself (editable, from copied src/) ──
 RUN pip install --no-cache-dir --no-deps -e .

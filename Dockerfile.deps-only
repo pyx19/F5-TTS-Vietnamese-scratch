@@ -13,16 +13,22 @@
 #
 # Quy trình:
 #   1. Build + push image này lên Docker Hub (cần internet, làm 1 lần hoặc khi
-#      model/deps đổi — KHÔNG cần build lại khi chỉ sửa code ứng dụng):
-#        docker build -f Dockerfile.deps-only -t <user>/f5tts-vi-deps:cu121 .
-#        docker push <user>/f5tts-vi-deps:cu121
+#      model/deps đổi — KHÔNG cần build lại khi chỉ sửa code ứng dụng). Chạy từ
+#      trong thư mục F5-TTS-Vietnamese-scratch:
+#        docker build --build-context ckpts=../F5-TTS-Vietnamese/ckpts \
+#          -f Dockerfile.deps-only -t phucvh145/f5tts-vi:cu121-deps-only .
+#        docker push phucvh145/f5tts-vi:cu121-deps-only
+#
+#      --build-context trỏ THẲNG vào ckpts thật ở project gốc — bắt buộc vì
+#      ckpts/ ở đây là NTFS junction mà Docker Desktop không đọc xuyên qua được
+#      khi build context (xem ghi chú tại dòng COPY --from=ckpts bên dưới).
 #
 #   2. Trên máy công ty (không có mạng):
 #      a. git clone repo này về một thư mục (làm việc này TRƯỚC khi mất mạng —
 #         clone trên laptop rồi copy cả thư mục qua USB/SCP nội bộ cũng được,
 #         không bắt buộc máy công ty phải tự clone được).
-#      b. docker pull <user>/f5tts-vi-deps:cu121   (hoặc docker load từ .tar.gz,
-#         xem hướng dẫn trong Dockerfile chính)
+#      b. docker pull phucvh145/f5tts-vi:cu121-deps-only   (hoặc docker load từ
+#         .tar.gz, xem hướng dẫn trong Dockerfile chính)
 #      c. docker compose -f docker-compose.deps-only.yml up -d
 #         (mount thư mục code đã clone vào /app — sửa code xong chỉ cần
 #         `docker compose restart`, KHÔNG cần rebuild image)
@@ -135,7 +141,18 @@ RUN pip install --no-cache-dir --no-deps -e .
 
 # ── Bake model weights (~10GB: vivoice + base + vocos) ───────────────────────
 # Layer riêng → Docker cache không invalidate nếu chỉ code ứng dụng đổi.
-COPY ckpts/ ./ckpts/
+#
+# QUAN TRỌNG: ckpts/ trong thư mục project là NTFS JUNCTION trỏ về
+# ../F5-TTS-Vietnamese/ckpts — Docker Desktop (WSL2/Hyper-V backend) KHÔNG đọc
+# xuyên qua được junction khi build context (lỗi "failed to calculate checksum
+# ... not found"), dù các tool Windows-native (du, explorer...) đọc xuyên qua
+# bình thường. Dùng BuildKit "additional build context" để trỏ THẲNG vào thư
+# mục thật (không qua junction) — xem lệnh build ở đầu file này (--build-context
+# ckpts=../F5-TTS-Vietnamese/ckpts). KHÔNG đổi lại thành "COPY ckpts/ ./ckpts/".
+COPY --from=ckpts . ./ckpts/
+# Dọn HF cache metadata (tương đương rule trong .dockerignore, nhưng đó chỉ áp
+# dụng cho main context — additional build context không đọc .dockerignore).
+RUN find ./ckpts -type d -name ".cache" -prune -exec rm -rf {} + || true
 
 # ── /app để trống — code ứng dụng sẽ được bind-mount hoặc git-clone vào đây ──
 RUN mkdir -p /app /checkpoints
