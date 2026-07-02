@@ -13,8 +13,8 @@ Model TTS (F5-TTS / ViVoice) và checkpoint được **recycle** từ `../F5-TTS
 Raw Text
    │
    ▼
-_normalize_linebreaks() / _remove_parens()      (pipeline.py — dọn cấu trúc)
-   │
+_normalize_linebreaks() / _normalize_symbols() / _remove_brackets()
+   │                                                (pipeline.py — dọn cấu trúc + ký hiệu)
    ▼
 [Stage 1] normalize_numbers() + vi_numbers()     (numbers.py — RULE-BASED, TRƯỚC LLM)
    │
@@ -59,7 +59,7 @@ text_pipeline/          package chuẩn hóa văn bản — xem plan.md cho từ
   pipeline.py             orchestrator — preprocess_text() / preprocess_and_chunk()
 
 eval/
-  test_sentences.json     52 câu test (số/đơn vị, viết tắt hành chính, kỹ thuật,
+  test_sentences.json     59 câu test (số/đơn vị, viết tắt hành chính, kỹ thuật,
                            code-switching, tên riêng)
   audit.py                chạy test set qua pipeline, log theo nhóm, so sánh baseline
   baseline_rule_based.json  kết quả audit không dùng LLM (rule-based only)
@@ -294,7 +294,7 @@ mỗi lần container khởi động.
 # Unit test từng module (numbers, letters, gate, acronyms, sanity, cache, chunking, sanitize, pipeline)
 python -m unittest discover -s tests_unit -t .
 
-# Audit 52 câu test set — rule-based only
+# Audit 59 câu test set — rule-based only
 python eval/audit.py --save eval/baseline_rule_based.json
 
 # Audit với LLM thật (cần Ollama đang chạy model qwen2.5:3b)
@@ -315,7 +315,29 @@ python eval/audit.py --llm --diff eval/baseline_llm.json
   phẩy → khoảng trắng), dùng trực tiếp với `infer_batch_process()` thay vì chunker
   generic byte-length của F5-TTS gốc.
 - **Mới**: `sanitize.py` — strip ký tự ngoài `vocab.txt` trước khi đưa vào model.
-- `eval/audit.py` + test set 52 câu — công cụ đo baseline/regression cho pipeline.
+- **Mới**: `numbers.py` nhận diện ngày/tháng/năm (`15/03/2024`, `ngày 30/6`,
+  `tháng 07/2024`), tỷ lệ/chỉ tiêu (`39/40` → "39 trên 40"), và khoảng năm
+  (`2021-2025` → "2021 đến 2025") — trước đây dấu `/` và `-` giữa 2 số bị xử lý độc
+  lập rồi mất luôn dấu nối, đọc thành các số rời rạc vô nghĩa.
+- **Mới**: `pipeline.py` xử lý ngoặc/ký hiệu triệt để hơn — trước đây `_remove_parens()`
+  chỉ xóa `()` và nối liền nội dung, khiến TTS đọc díu không ngắt nghỉ (vd "Architecture
+  (ZTA)" → đọc dính "Architecture ZTA"). Giờ `_remove_brackets()` chèn dấu phẩy quanh
+  nội dung trong `()` **và** `{}` để tạo pause tự nhiên như người đọc thật, cộng
+  `_normalize_symbols()` xử lý thêm:
+  - `&` giữa từ thường → "và"; `&` giữa initialism viết hoa (P&G, R&D, AT&T) → nối
+    liền để letter-spell đúng thành 1 cụm thay vì rớt xuống chữ đơn lẻ vô nghĩa
+  - `" ' " " ' '` (ngoặc kép/đơn kiểu thẳng lẫn kiểu chữ) → xóa sạch
+  - `...` giữa câu → dấu phẩy (ngắt nghỉ); cuối câu/dòng → dấu chấm (không mất
+    dấu câu như trước)
+  - gạch đầu dòng ("-", "•", "*") ở đầu dòng danh sách → xóa (marker cấu trúc)
+  - dấu `:` dính liền chữ sau (không cách) → giờ cũng được nhận diện
+- **Mới**: Gradio UI có sẵn 2 giọng chọn nhanh (Nữ mặc định / Nam — `sample_nam.wav`)
+  qua radio button, nút "🔍 Xem trước văn bản chuẩn hóa" (chạy đúng
+  `preprocess_text → sanitize_for_vivoice → normalize_for_f5`, khớp 100% với text sẽ
+  đưa vào model, không load model TTS nên nhanh), cảnh báo khi LLM sanity-check fail,
+  thống kê skip/cache-hit, info text giải thích NFE Steps/CFG Strength, và ví dụ mẫu
+  ở cuối trang lấy trực tiếp từ `eval/test_sentences.json`.
+- `eval/audit.py` + test set 59 câu — công cụ đo baseline/regression cho pipeline.
 
 ### Giới hạn đã biết (phát hiện qua audit — cả rule-based-only và chạy thật với Qwen2.5:3b qua Ollama local)
 

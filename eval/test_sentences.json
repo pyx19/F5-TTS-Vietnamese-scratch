@@ -11,6 +11,10 @@
   {"id": "num10", "category": "numbers_units", "text": "Video được ghi hình ở tốc độ 60 fps với độ phân giải 4K."},
   {"id": "num11", "category": "numbers_units", "text": "Ngân sách đầu tư năm 2024 tăng 10.000 tỷ đồng so với năm trước."},
   {"id": "num12", "category": "numbers_units", "text": "Bộ xử lý mới chạy ở xung nhịp 3.5 GHz, tiêu thụ điện năng thấp hơn 15%."},
+  {"id": "num13", "category": "numbers_units", "text": "Quyết định có hiệu lực kể từ ngày 15/03/2024 theo thông báo chính thức."},
+  {"id": "num14", "category": "numbers_units", "text": "Thời hạn hoàn thành hồ sơ trước ngày 30/6 theo kế hoạch đã đề ra."},
+  {"id": "num15", "category": "numbers_units", "text": "Đơn vị đã hoàn thành đạt 39/40 chỉ tiêu được giao trong quý vừa qua."},
+  {"id": "num16", "category": "numbers_units", "text": "Căn cứ Nghị định số 64/2007/NĐ-CP ngày 15/03/2024 của Chính phủ."},
 
   {"id": "admin01", "category": "admin_abbrev", "text": "UBND tỉnh đã ban hành kế hoạch triển khai theo chỉ đạo của HĐND."},
   {"id": "admin02", "category": "admin_abbrev", "text": "Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị."},
@@ -48,6 +52,9 @@
   {"id": "code08", "category": "code_switching", "text": "Trải nghiệm người dùng (User Experience - UX) là ưu tiên hàng đầu của đội thiết kế."},
   {"id": "code09", "category": "code_switching", "text": "Các \"ốc đảo dữ liệu\" (Data Silos) đang gây nghẽn mạch dòng chảy thông tin nội bộ."},
   {"id": "code10", "category": "code_switching", "text": "Startup công nghệ tập trung phát triển nền tảng training và inference riêng."},
+  {"id": "code11", "category": "code_switching", "text": "Tập đoàn P&G hợp tác cùng bộ phận R&D để phát triển sản phẩm mới."},
+  {"id": "code12", "category": "code_switching", "text": "Bộ Nông nghiệp & Phát triển nông thôn đã ban hành hướng dẫn triển khai mới."},
+  {"id": "code13", "category": "code_switching", "text": "Dữ liệu cấu hình {status: active} đã được đồng bộ lên hệ thống trung tâm."},
 
   {"id": "brand01", "category": "proper_nouns", "text": "ViVoice cho phép tổng hợp giọng nói tiếng Việt tự nhiên hơn ChatGPT đọc văn bản."},
   {"id": "brand02", "category": "proper_nouns", "text": "RTX 5060 là lựa chọn phổ biến cho các tác vụ huấn luyện mô hình vừa và nhỏ."},

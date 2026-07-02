@@ -64,6 +64,56 @@ class TestNormalizeNumbers(unittest.TestCase):
         result = normalize_numbers("mô hình F5-TTS")
         self.assertIn("F5-TTS", result)
 
+    def test_full_date_dmy(self):
+        result = normalize_numbers("Sinh ngày 15/03/1990 tại Hà Nội.")
+        self.assertIn("ngày 15 tháng 3 năm 1990", result)
+        self.assertNotIn("ngày ngày", result)  # không lặp "ngày" khi source đã có sẵn
+
+    def test_full_date_dmy_without_ngay_prefix(self):
+        result = normalize_numbers("Có hiệu lực từ 15/03/2024.")
+        self.assertIn("ngày 15 tháng 3 năm 2024", result)
+
+    def test_date_dm_with_ngay_no_year(self):
+        result = normalize_numbers("Hoàn thành trước ngày 30/6.")
+        self.assertIn("ngày 30 tháng 6", result)
+
+    def test_month_year_with_thang_prefix(self):
+        result = normalize_numbers("Phiên bản phát hành tháng 07/2024.")
+        self.assertIn("tháng 7 năm 2024", result)
+
+    def test_ratio_ratio_fallback(self):
+        # "39/40" không khớp ngày (40 không phải tháng hợp lệ) -> tỷ lệ "trên"
+        self.assertIn("39 trên 40", normalize_numbers("Chỉ tiêu đạt 39/40 điểm."))
+
+    def test_ratio_ambiguous_two_part_no_keyword(self):
+        # Không có "ngày"/"tháng" đứng trước -> mặc định coi là tỷ lệ, không phải ngày
+        self.assertIn("3 trên 5", normalize_numbers("Tỷ lệ thắng 3/5 trận đấu."))
+
+    def test_24_7_not_confused_with_date(self):
+        # "24/7/2024" là ngày, không phải idiom "24/7" (test_24_7 ở trên đã cover idiom riêng)
+        result = normalize_numbers("Trung tâm hoạt động 24/7/2024 không nghỉ.")
+        self.assertIn("ngày 24 tháng 7 năm 2024", result)
+        self.assertNotIn("hai mươi tư bảy", result)
+
+    def test_doc_code_and_date_combined(self):
+        result = normalize_numbers("Nghị định số 64/2007/NĐ-CP ngày 15/03/2024.")
+        self.assertIn("64 2007 NĐ CP", result)
+        self.assertIn("ngày 15 tháng 3 năm 2024", result)
+
+    def test_invalid_date_falls_back_unchanged(self):
+        # Tháng > 12 -> không phải ngày hợp lệ, giữ nguyên cho rule khác/fallback xử lý
+        result = normalize_numbers("Mã số 99/88/2024 không phải ngày.")
+        self.assertIn("99/88/2024", result)
+
+    def test_year_range(self):
+        result = normalize_numbers("Kế hoạch giai đoạn 2021-2025.")
+        self.assertIn("2021 đến 2025", result)
+
+    def test_year_range_does_not_touch_short_hyphenated_numbers(self):
+        # Không phải năm 4 chữ số -> không đụng vào (tránh nhầm ID/số điện thoại)
+        result = normalize_numbers("Trang 10-15 của tài liệu.")
+        self.assertNotIn("đến", result)
+
 
 class TestViNumbers(unittest.TestCase):
     def test_skips_when_normalizer_missing(self):

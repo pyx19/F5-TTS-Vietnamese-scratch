@@ -2,7 +2,8 @@
 preprocess_text() — orchestrator cho toàn bộ pipeline mô tả trong plan.md:
 
   Raw Text
-     -> _normalize_linebreaks() / _remove_parens()   (dọn cấu trúc trước mọi bước)
+     -> _normalize_linebreaks() / _normalize_symbols() / _remove_brackets()
+        (dọn cấu trúc + ký hiệu trước mọi bước)
      -> [Stage 1] normalize_numbers() + vi_numbers()  (rule-based, TRƯỚC Qwen)
      -> [Stage 2] needs_llm() gate                    (bên trong llm_normalize)
      -> [Stage 3] llm_normalize() / Qwen               (per-sentence, có sanity_ok + cache)
@@ -27,6 +28,8 @@ from .sanitize import sanitize_for_vivoice
 def _normalize_linebreaks(text: str) -> str:
     """
     Chuyển cấu trúc xuống dòng → ranh giới câu để F5-TTS tạo ngắt nghỉ.
+    - Bỏ ký hiệu gạch đầu dòng ("-", "•", "*") ở đầu dòng — đây là marker cấu
+      trúc danh sách, không phải nội dung cần đọc thành tiếng ("trừ", "sao"...).
     - Mỗi dòng không kết thúc bằng dấu câu → thêm dấu chấm
     - Tab → space
     - Dòng trống → bỏ qua
@@ -35,6 +38,7 @@ def _normalize_linebreaks(text: str) -> str:
     out = []
     for line in text.split("\n"):
         line = re.sub(r"\t+", " ", line).strip()
+        line = re.sub(r"^[-•*]\s+", "", line)
         if not line:
             continue
         if line[-1] not in ".!?,;:":
@@ -43,16 +47,48 @@ def _normalize_linebreaks(text: str) -> str:
     return " ".join(out)
 
 
-def _remove_parens(text: str) -> str:
+def _normalize_symbols(text: str) -> str:
     """
-    Xóa dấu ngoặc (), giữ nội dung bên trong.
-    TTS model đọc ký tự '(' thành âm ký sinh ("a", "ở", "e"...).
-      (Cloud Computing) → Cloud Computing
-      (ZTA)             → ZTA  (LLM xử lý tiếp)
-    Ngoặc lẻ không có cặp cũng bị xóa.
+    Chuẩn hóa ký hiệu hay gây đọc sai/díu vào nhau nếu chỉ xóa trơn:
+      P&G, R&D, AT&T  → PG, RD, ATT  (nối liền, không tách rời — chữ hoa đơn lẻ
+                         như "P", "G" không khớp ALLCAPS_RE (cần 2-8 ký tự) nên
+                         bị hạ thường vô nghĩa; nối liền để expand_abbrevs_fallback()
+                         sau LLM phiên âm cả cụm như 1 viết tắt duy nhất)
+      &        → " và "  (còn lại, giữa từ/cụm từ thường — vd "A & B Company")
+      " ' “ ” ‘ ’ → xóa  (thuật ngữ trong ngoặc kép đọc thẳng, không cần ngắt
+                           nghỉ riêng như (), {} — chỉ 1 từ/cụm ngắn)
+      ...      → "," (giữa câu, còn nội dung theo sau) hoặc "." (cuối câu/dòng)
+                 — giữ nguyên chuỗi 2+ dấu chấm dễ đọc thành nhiều nhịp dừng lạ.
+    Chạy TRƯỚC _remove_brackets() để "&" bên trong ngoặc cũng được xử lý
+    (vd "(R&D)" → "(RD)" → ", RD,").
     """
-    text = re.sub(r"\(([^)]*)\)", r" \1", text)
-    text = re.sub(r"[()]", "", text)
+    text = re.sub(r"\b([A-Z]{1,4})&([A-Z]{1,4})\b", r"\1\2", text)
+    text = re.sub(r"\s*&\s*", " và ", text)
+    text = re.sub(r"['\"‘’“”]", "", text)
+    text = re.sub(r"\.{2,}(?=\s*\S)", ",", text)  # còn nội dung theo sau -> phẩy
+    text = re.sub(r"\.{2,}", ".", text)            # cuối câu/dòng -> chấm
+    return re.sub(r"  +", " ", text).strip()
+
+
+def _remove_brackets(text: str) -> str:
+    """
+    Xóa dấu ngoặc ()/{}, CHÈN DẤU PHẨY quanh nội dung để tạo ngắt nghỉ.
+    TTS model đọc ký tự '(' thành âm ký sinh ("a", "ở", "e"...) — chỉ xóa ngoặc mà
+    không chèn dấu câu khiến nội dung chú thích bị đọc díu liền vào câu chính, không
+    có pause hợp lý (đúng như người đọc thật sẽ ngừng một nhịp trước/sau chú thích).
+      (Cloud Computing) → , Cloud Computing,
+      (ZTA)             → , ZTA,  (LLM xử lý tiếp phần viết tắt)
+      {Data Silos}      → , Data Silos,
+    Ngoặc lẻ không có cặp bị xóa thẳng (không đủ ngữ cảnh để chèn dấu phẩy).
+    """
+    text = re.sub(r"\(([^)]*)\)", r", \1,", text)
+    text = re.sub(r"\{([^}]*)\}", r", \1,", text)
+    text = re.sub(r"[(){}]", "", text)
+    # Dọn dấu phẩy thừa sinh ra khi nội dung trong ngoặc đứng cạnh dấu câu khác
+    text = re.sub(r",\s*,+", ",", text)          # ",," -> ","
+    text = re.sub(r",\s*([.!?;:])", r"\1", text)  # ", ." -> "."
+    text = re.sub(r"^\s*,\s*", "", text)          # phẩy thừa đầu câu
+    text = re.sub(r",\s*$", "", text)             # phẩy thừa cuối câu
     text = re.sub(r"\s+([,;:])", r"\1", text)
     return re.sub(r"  +", " ", text).strip()
 
@@ -73,8 +109,11 @@ def preprocess_text(
     text = _normalize_linebreaks(text)
     dbg("PREP", f"after _normalize_linebreaks: {text[:120]}")
 
-    text = _remove_parens(text)
-    dbg("PREP", f"after _remove_parens: {text[:120]}")
+    text = _normalize_symbols(text)
+    dbg("PREP", f"after _normalize_symbols: {text[:120]}")
+
+    text = _remove_brackets(text)
+    dbg("PREP", f"after _remove_brackets: {text[:120]}")
 
     # ── Stage 1: số xử lý TRƯỚC LLM ─────────────────────────────────────────
     before_num = text
@@ -109,7 +148,7 @@ def preprocess_text(
         dbg("PREP", f"after expand_abbrevs_fallback: {text[:120]}")
 
     text = text.lower()
-    text = re.sub(r":\s+", ", ", text)
+    text = re.sub(r":\s*", ", ", text)  # \s* (không phải \s+) — bắt cả ":" dính liền chữ sau
     text = re.sub(r"([^\W\d_])-([^\W\d_])", r"\1 \2", text)
     text = re.sub(r"([^\W\d_])/([^\W\d_])", r"\1 \2", text)
     text = re.sub(r"\s+-\s+", " ", text)
