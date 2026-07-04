@@ -71,6 +71,12 @@ VIVOICE_DIR = CKPTS_DIR / "vivoice"
 VOCAB_FILE = VIVOICE_DIR / "vocab.txt"
 SAMPLE_RATE = 24000
 
+# Khoảng lặng THẬT (np.zeros, không phải crossfade) chèn giữa các ĐOẠN VĂN
+# (paragraph, ngăn cách bởi dòng trống trong text gốc) — mạnh hơn hẳn ranh giới
+# câu thường (chỉ có crossfade 0.15s, không có khoảng lặng thật sự) theo đúng
+# yêu cầu: xuống dòng cách dòng (Điều 1/Điều 2...) nên nghỉ NHIỀU HƠN dấu chấm câu.
+PARAGRAPH_SILENCE_SEC = 0.5
+
 # f5_tts đã pip-install editable trỏ về F5-TTS-Vietnamese/src ở project gốc (hoặc về
 # vị trí baked riêng trong image deps-only) — chèn src/ cạnh file này lên đầu sys.path
 # để ưu tiên dùng bản model code đã recycle tại đây, nếu nó tồn tại tại chỗ.
@@ -165,9 +171,13 @@ def run(text: str, ref_audio: Path, ref_text: str, output: Path,
     if sanitized != normalized:
         dbg("PREP", f"after sanitize_for_vivoice: {sanitized[:120]}")
 
-    chunks = normalize_for_f5(sanitized, max_chars=max_chars)
+    chunks, paragraph_break_after = normalize_for_f5(
+        sanitized, max_chars=max_chars,
+        llm_model=llm_model, ollama_url=ollama_url, llm_api_key=llm_api_key,
+    )
     print(f"[*] Preprocessed: {sanitized[:100]}{'...' if len(sanitized) > 100 else ''}")
-    print(f"[*] Chunks      : {len(chunks)} (max {max_chars} chars/chunk)")
+    print(f"[*] Chunks      : {len(chunks)} (max {max_chars} chars/chunk, "
+          f"{len(paragraph_break_after)} ranh giới đoạn văn)")
 
     print("\n[*] Loading model ...")
     t_load = time.perf_counter()
@@ -181,20 +191,48 @@ def run(text: str, ref_audio: Path, ref_text: str, output: Path,
     t0 = time.perf_counter()
 
     ref_wave, ref_sr = torchaudio.load(ref_proc)
-    audio, out_sr, _spec = next(
-        infer_batch_process(
-            (ref_wave, ref_sr), ref_text_proc, chunks, ema, vocoder,
-            mel_spec_type="vocos",
-            target_rms=target_rms,
-            cross_fade_duration=cross_fade_duration,
-            nfe_step=nfe_step,
-            cfg_strength=cfg_strength,
-            sway_sampling_coef=sway_sampling_coef,
-            speed=spd,
-            fix_duration=fix_duration,
-            device=device,
+
+    # Nhóm chunk theo ĐOẠN VĂN — mỗi nhóm tổng hợp riêng (infer_batch_process tự
+    # crossfade các chunk TRONG nhóm như cũ), rồi nối các nhóm lại bằng khoảng
+    # LẶNG THẬT (np.zeros) thay vì crossfade — xem PARAGRAPH_SILENCE_SEC ở trên.
+    groups: list[list[str]] = []
+    current_group: list[str] = []
+    for i, chunk in enumerate(chunks):
+        current_group.append(chunk)
+        if i in paragraph_break_after:
+            groups.append(current_group)
+            current_group = []
+    if current_group:
+        groups.append(current_group)
+
+    audio_parts: list[np.ndarray] = []
+    out_sr = SAMPLE_RATE
+    for group in groups:
+        part, out_sr, _spec = next(
+            infer_batch_process(
+                (ref_wave, ref_sr), ref_text_proc, group, ema, vocoder,
+                mel_spec_type="vocos",
+                target_rms=target_rms,
+                cross_fade_duration=cross_fade_duration,
+                nfe_step=nfe_step,
+                cfg_strength=cfg_strength,
+                sway_sampling_coef=sway_sampling_coef,
+                speed=spd,
+                fix_duration=fix_duration,
+                device=device,
+            )
         )
-    )
+        audio_parts.append(part)
+
+    if len(audio_parts) > 1:
+        silence = np.zeros(int(PARAGRAPH_SILENCE_SEC * out_sr), dtype=audio_parts[0].dtype)
+        pieces = [audio_parts[0]]
+        for part in audio_parts[1:]:
+            pieces.append(silence)
+            pieces.append(part)
+        audio = np.concatenate(pieces)
+    else:
+        audio = audio_parts[0]
 
     elapsed = time.perf_counter() - t0
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -3,7 +3,7 @@
     "id": "num01",
     "category": "numbers_units",
     "text": "Doanh thu quý này đạt 15.5 tỷ USD, tăng trưởng vượt kỳ vọng ban đầu.",
-    "normalized": "doanh thu quý này đạt mười lăm phẩy năm tỷ đô la, tăng trưởng vượt kỳ vọng ban đầu."
+    "normalized": "doanh thu quý này đạt mười lăm phẩy năm tỷ iu tăng trưởng vượt kỳ vọng ban đầu."
   },
   {
     "id": "num02",
@@ -27,7 +27,7 @@
     "id": "num05",
     "category": "numbers_units",
     "text": "Căn cứ văn bản số 123/QĐ-TTg về việc phê duyệt chủ trương đầu tư.",
-    "normalized": "căn cứ văn bản số một trăm hai mươi ba quyết định thủ tướng chính phủ về việc phê duyệt chủ trương đầu tư."
+    "normalized": "căn cứ văn bản số một trăm hai mươi ba, quy đê tê tê gờ, về việc phê duyệt chủ trương đầu tư."
   },
   {
     "id": "num06",
@@ -51,7 +51,7 @@
     "id": "num09",
     "category": "numbers_units",
     "text": "Trung tâm dữ liệu vận hành liên tục 24/7 để đảm bảo dịch vụ không gián đoạn.",
-    "normalized": "trung tâm dữ liệu vận hành liên tục hai mươi tư bảy để đảm bảo dịch vụ không gián đoạn."
+    "normalized": "trung tâm dữ liệu vận hành liên tục hai mươi tư trên bảy để đảm bảo dịch vụ không gián đoạn."
   },
   {
     "id": "num10",
@@ -72,6 +72,36 @@
     "normalized": "bộ xử lý mới chạy ở xung nhịp ba phẩy năm ghz, tiêu thụ điện năng thấp hơn mười lăm phần trăm."
   },
   {
+    "id": "num13",
+    "category": "numbers_units",
+    "text": "Quyết định có hiệu lực kể từ ngày 15/03/2024 theo thông báo chính thức.",
+    "normalized": "quyết định có hiệu lực kể từ ngày mười lăm tháng ba năm hai nghìn không trăm hai mươi tư theo thông báo chính thức."
+  },
+  {
+    "id": "num14",
+    "category": "numbers_units",
+    "text": "Thời hạn hoàn thành hồ sơ trước ngày 30/6 theo kế hoạch đã đề ra.",
+    "normalized": "thời hạn hoàn thành hồ sơ trước ngày ba mươi tháng sáu theo kế hoạch đã đề ra."
+  },
+  {
+    "id": "num15",
+    "category": "numbers_units",
+    "text": "Đơn vị đã hoàn thành đạt 39/40 chỉ tiêu được giao trong quý vừa qua.",
+    "normalized": "đơn vị đã hoàn thành đạt ba mươi chín trên bốn mươi chỉ tiêu được giao trong quý vừa qua."
+  },
+  {
+    "id": "num16",
+    "category": "numbers_units",
+    "text": "Căn cứ Nghị định số 64/2007/NĐ-CP ngày 15/03/2024 của Chính phủ.",
+    "normalized": "căn cứ nghị định số sáu mươi tư, hai nghìn không trăm lẻ bảy, nờ đê xê pê, ngày mười lăm tháng ba năm hai nghìn không trăm hai mươi tư của chính phủ."
+  },
+  {
+    "id": "num17",
+    "category": "numbers_units",
+    "text": "Quốc hội khóa QH15 đã thông qua nhiều nghị quyết quan trọng.",
+    "normalized": "quốc hội khóa quy hát mười lăm đã thông qua nhiều nghị quyết quan trọng."
+  },
+  {
     "id": "admin01",
     "category": "admin_abbrev",
     "text": "UBND tỉnh đã ban hành kế hoạch triển khai theo chỉ đạo của HĐND.",
@@ -81,7 +111,7 @@
     "id": "admin02",
     "category": "admin_abbrev",
     "text": "Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị.",
-    "normalized": "căn cứ nghị quyết số ba mươi sáu nghị quyết trung ương ngày một tháng bảy năm hai nghìn không trăm mười bốn của bộ chính trị."
+    "normalized": "căn cứ nghị quyết số ba mươi sáu, nờ quy tê vê kép, ngày một tháng bảy năm hai nghìn không trăm mười bốn của bộ chính trị."
   },
   {
     "id": "admin03",
@@ -99,7 +129,7 @@
     "id": "admin05",
     "category": "admin_abbrev",
     "text": "Nghị định số 64/2007/NĐ-CP quy định chi tiết về ứng dụng công nghệ thông tin.",
-    "normalized": "nghị định số sáu mươi tư hai nghìn không trăm lẻ bảy nghị định chính phủ quy định chi tiết về ứng dụng công nghệ thông tin."
+    "normalized": "nghị định số sáu mươi tư, hai nghìn không trăm lẻ bảy, nờ đê xê pê, quy định chi tiết về ứng dụng công nghệ thông tin."
   },
   {
     "id": "admin06",
@@ -111,13 +141,13 @@
     "id": "admin07",
     "category": "admin_abbrev",
     "text": "GS. Nguyễn Văn A cùng PGS. Trần Thị B đã có báo cáo quan trọng tại hội nghị.",
-    "normalized": "giáo sư. nguyễn văn âi cùng phó giáo sư. trần thị b đã có báo cáo quan trọng tại hội nghị."
+    "normalized": "giáo sư. nguyễn văn a cùng phó giáo sư. trần thị b đã có báo cáo quan trọng tại hội nghị."
   },
   {
     "id": "admin08",
     "category": "admin_abbrev",
     "text": "TS. Lê Văn C, ThS. Phạm Thị D và BS. Hoàng Văn E cùng tham gia hội đồng thẩm định.",
-    "normalized": "tiến sĩ. lê văn thạc sĩ. phạm thị d và bác sĩ. hoàng văn e cùng tham gia hội đồng thẩm định."
+    "normalized": "tiến sĩ. lê văn c, thạc sĩ. phạm thị d và bác sĩ. hoàng văn e cùng tham gia hội đồng thẩm định."
   },
   {
     "id": "admin09",
@@ -129,13 +159,13 @@
     "id": "admin10",
     "category": "admin_abbrev",
     "text": "Xét đề nghị tại Tờ trình số 102/TTr-BTTTT và Báo cáo số 45/BC-BTP.",
-    "normalized": "xét đề nghị tại tờ trình số một trăm lẻ hai thông tư bi ti ti ti ti và báo cáo số bốn mươi lăm báo cáo bi ti pi."
+    "normalized": "xét đề nghị tại tờ trình số một trăm lẻ hai, tê tê rờ bê tê tê tê tê, và báo cáo số bốn mươi lăm, bê xê bê tê pê."
   },
   {
     "id": "admin11",
     "category": "admin_abbrev",
     "text": "Quốc hội đã thông qua Nghị quyết số 57/2022/QH15 về đầu tư dự án trọng điểm.",
-    "normalized": "quốc hội đã thông qua nghị quyết số năm mươi bảy hai nghìn không trăm hai mươi hai quh mười lăm về đầu tư dự án trọng điểm."
+    "normalized": "quốc hội đã thông qua nghị quyết số năm mươi bảy, hai nghìn không trăm hai mươi hai, quy hát mười lăm, về đầu tư dự án trọng điểm."
   },
   {
     "id": "admin12",
@@ -144,16 +174,28 @@
     "normalized": "điều một chương hai quy định rõ trách nhiệm của các bên liên quan tại điều ba."
   },
   {
+    "id": "admin13",
+    "category": "admin_abbrev",
+    "text": "PTGĐ và TGĐ đã họp bàn về kế hoạch chuyển đổi số của TCT theo chỉ đạo của BCĐ.",
+    "normalized": "phó tổng giám đốc và tổng giám đốc đã họp bàn về kế hoạch chuyển đổi số của tổng công ty theo chỉ đạo của ban chỉ đạo."
+  },
+  {
+    "id": "admin14",
+    "category": "admin_abbrev",
+    "text": "V/v triển khai kế hoạch CNTT theo yêu cầu của phòng NS và phòng KH.",
+    "normalized": "về việc triển khai kế hoạch công nghệ thông tin theo yêu cầu của phòng nhân sự và phòng kế hoạch."
+  },
+  {
     "id": "tech01",
     "category": "tech_abbrev",
     "text": "Hệ thống AI và Machine Learning giúp CEO ra quyết định nhanh hơn.",
-    "normalized": "hệ thống ây ai và machine learning giúp xi i âu ai ra quyết định nhanh hơn."
+    "normalized": "hệ thống ây ây ai và machine learning giúp xi i âu i ra quyết định nhanh hơn."
   },
   {
     "id": "tech02",
     "category": "tech_abbrev",
     "text": "Generative AI đang phát triển mạnh trong lĩnh vực IT.",
-    "normalized": "generative ây ai đang phát triển mạnh trong lĩnh vực ai ti."
+    "normalized": "generative ây ây ai đang phát triển mạnh trong lĩnh vực ây ai ti."
   },
   {
     "id": "tech03",
@@ -195,31 +237,31 @@
     "id": "tech09",
     "category": "tech_abbrev",
     "text": "Đội ngũ HR đang tuyển dụng thêm kỹ sư cho dự án USD-funded mới.",
-    "normalized": "đội ngũ ếch a rờ đang tuyển dụng thêm kỹ sư cho dự án iu ét đi funded mới."
+    "normalized": "đội ngũ hế rờ đang tuyển dụng thêm kỹ sư cho dự án iu ét đi funded mới."
   },
   {
     "id": "tech10",
     "category": "tech_abbrev",
     "text": "VRAM lớn hơn giúp mô hình AI xử lý tác vụ phức tạp mượt mà hơn.",
-    "normalized": "vi a rờ ây em lớn hơn giúp mô hình ây ai xử lý tác vụ phức tạp mượt mà hơn."
+    "normalized": "vi a rờ ây em lớn hơn giúp mô hình ây ây ai xử lý tác vụ phức tạp mượt mà hơn."
   },
   {
     "id": "tech11",
     "category": "tech_abbrev",
     "text": "COVID đã thúc đẩy chuyển đổi số nhanh hơn tại nhiều tổ chức ASEAN và NATO.",
-    "normalized": "xi âu vi ai đi đã thúc đẩy chuyển đổi số nhanh hơn tại nhiều tổ chức cô vít và na tô."
+    "normalized": "xi âu vi ai đi đã thúc đẩy chuyển đổi số nhanh hơn tại nhiều tổ chức aô vít và na tô."
   },
   {
     "id": "tech12",
     "category": "tech_abbrev",
     "text": "SaaS platform mới hỗ trợ tích hợp IoT và OAuth cho doanh nghiệp.",
-    "normalized": "saas platform mới hỗ trợ tích hợp ai âu ti và âu âu ếch cho doanh nghiệp."
+    "normalized": "saas platform mới hỗ trợ tích hợp iot và oauth cho doanh nghiệp."
   },
   {
     "id": "code01",
     "category": "code_switching",
     "text": "Mô hình được triển khai theo hình thức On-premise thay vì Cloud API.",
-    "normalized": "mô hình được triển khai theo hình thức on premise thay vì cloud ây pi ai."
+    "normalized": "mô hình được triển khai theo hình thức on premise thay vì ô âu pi."
   },
   {
     "id": "code02",
@@ -249,7 +291,7 @@
     "id": "code06",
     "category": "code_switching",
     "text": "Ứng dụng trí tuệ nhân tạo tạo sinh (Generative AI) đang được thử nghiệm rộng rãi.",
-    "normalized": "ứng dụng trí tuệ nhân tạo tạo sinh generative ây ai đang được thử nghiệm rộng rãi."
+    "normalized": "ứng dụng trí tuệ nhân tạo tạo sinh, generative ây ây ai; đang được thử nghiệm rộng rãi."
   },
   {
     "id": "code07",
@@ -261,13 +303,13 @@
     "id": "code08",
     "category": "code_switching",
     "text": "Trải nghiệm người dùng (User Experience - UX) là ưu tiên hàng đầu của đội thiết kế.",
-    "normalized": "trải nghiệm người dùng user experience iu ích là ưu tiên hàng đầu của đội thiết kế."
+    "normalized": "trải nghiệm người dùng, user experience, iu ích; là ưu tiên hàng đầu của đội thiết kế."
   },
   {
     "id": "code09",
     "category": "code_switching",
     "text": "Các \"ốc đảo dữ liệu\" (Data Silos) đang gây nghẽn mạch dòng chảy thông tin nội bộ.",
-    "normalized": "các \"ốc đảo dữ liệu\" data silos đang gây nghẽn mạch dòng chảy thông tin nội bộ."
+    "normalized": "các ốc đảo dữ liệu, data silos; đang gây nghẽn mạch dòng chảy thông tin nội bộ."
   },
   {
     "id": "code10",
@@ -276,10 +318,28 @@
     "normalized": "startup công nghệ tập trung phát triển nền tảng training và inference riêng."
   },
   {
+    "id": "code11",
+    "category": "code_switching",
+    "text": "Tập đoàn P&G hợp tác cùng bộ phận R&D để phát triển sản phẩm mới.",
+    "normalized": "tập đoàn pi gờ hợp tác cùng bộ phận a rờ đi để phát triển sản phẩm mới."
+  },
+  {
+    "id": "code12",
+    "category": "code_switching",
+    "text": "Bộ Nông nghiệp & Phát triển nông thôn đã ban hành hướng dẫn triển khai mới.",
+    "normalized": "bộ nông nghiệp và phát triển nông thôn đã ban hành hướng dẫn triển khai mới."
+  },
+  {
+    "id": "code13",
+    "category": "code_switching",
+    "text": "Dữ liệu cấu hình {status: active} đã được đồng bộ lên hệ thống trung tâm.",
+    "normalized": "dữ liệu cấu hình, status, active; đã được đồng bộ lên hệ thống trung tâm."
+  },
+  {
     "id": "brand01",
     "category": "proper_nouns",
     "text": "ViVoice cho phép tổng hợp giọng nói tiếng Việt tự nhiên hơn ChatGPT đọc văn bản.",
-    "normalized": "vivoice cho phép tổng hợp giọng nói tiếng việt tự nhiên hơn chat gờ pi ti đọc văn bản."
+    "normalized": "viây voice cho phép tổng hợp giọng nói tiếng việt tự nhiên hơn chát gờ pi ti đọc văn bản."
   },
   {
     "id": "brand02",
@@ -297,13 +357,13 @@
     "id": "brand04",
     "category": "proper_nouns",
     "text": "F5-TTS là một trong những mô hình tổng hợp giọng nói mã nguồn mở nổi bật.",
-    "normalized": "f5-et tts là một trong những mô hình tổng hợp giọng nói mã nguồn mở nổi bật."
+    "normalized": "f ép 5 ti ti ét là một trong những mô hình tổng hợp giọng nói mã nguồn mở nổi bật."
   },
   {
     "id": "brand05",
     "category": "proper_nouns",
     "text": "M2 Pro mang lại hiệu năng ổn định cho các tác vụ suy luận trên thiết bị di động.",
-    "normalized": "m2 pro mang lại hiệu năng ổn định cho các tác vụ suy luận trên thiết bị di động."
+    "normalized": "m2 em 2 ổn định mang lại hiệu năng cho các tác vụ suy luận trên thiết bị di động."
   },
   {
     "id": "brand06",

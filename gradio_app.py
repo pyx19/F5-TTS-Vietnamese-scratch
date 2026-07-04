@@ -46,6 +46,33 @@ BASE_DIR    = Path(__file__).parent
 SAMPLE_RATE = 24000
 device      = "cuda" if torch.cuda.is_available() else "cpu"
 
+# ── Temp output cleanup ──────────────────────────────────────────────────────
+# Mỗi lần bấm "Tổng hợp" tạo 1 file .wav tạm (tempfile delete=False — bắt buộc,
+# Gradio cần đọc lại file sau khi hàm return). Trước đây các file này nằm thẳng
+# trong thư mục temp hệ thống và KHÔNG bao giờ tự xóa, kể cả khi thoát bằng
+# Ctrl+C — tích lũy vô hạn qua nhiều session (đã phát hiện thực tế: 18 file,
+# ~38MB). Giờ dùng riêng 1 thư mục con để dọn dẹp an toàn (không đụng file tạm
+# của app khác), và tự dọn cả lúc khởi động lẫn sau mỗi lần tổng hợp.
+_TMP_DIR = Path(tempfile.gettempdir()) / "f5tts-vi-gradio"
+_TMP_DIR.mkdir(parents=True, exist_ok=True)
+_TMP_KEEP_LATEST = 5
+
+
+def _cleanup_old_outputs(keep_latest: int = _TMP_KEEP_LATEST) -> None:
+    """Xóa các file .wav tạm cũ trong _TMP_DIR, chỉ giữ lại keep_latest file gần nhất."""
+    try:
+        wavs = sorted(_TMP_DIR.glob("*.wav"), key=lambda p: p.stat().st_mtime, reverse=True)
+    except OSError:
+        return
+    for old in wavs[keep_latest:]:
+        try:
+            old.unlink()
+        except OSError:
+            pass
+
+
+_cleanup_old_outputs(keep_latest=0)  # dọn sạch lúc khởi động — session cũ đã đóng, không còn cần
+
 sys.path.insert(0, str(BASE_DIR))
 from text_pipeline.debug import (  # noqa: E402
     DEFAULT_LLM_API_KEY as _DEFAULT_LLM_API_KEY,
@@ -160,8 +187,9 @@ def infer_vivoice_wrap(ref_audio, ref_text, gen_text, nfe_step, cfg_strength,
     if not VOCAB_FILE.exists():
         return None, f"❌ Vocab không tìm thấy: {VOCAB_FILE}"
 
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+    with tempfile.NamedTemporaryFile(dir=str(_TMP_DIR), suffix=".wav", delete=False) as f:
         tmp_path = Path(f.name)
+    _cleanup_old_outputs()  # dọn output cũ hơn, chỉ giữ _TMP_KEEP_LATEST file gần nhất
 
     tee = _Tee(sys.stdout)
     try:
@@ -206,7 +234,7 @@ def preview_text(gen_text, llm_normalize, ollama_model, ollama_url, llm_api_key)
     if not gen_text.strip():
         return "", "", gr.update(value="", visible=False)
 
-    from infer_vivoice import VOCAB_FILE
+    from infer_vivoice import PARAGRAPH_SILENCE_SEC, VOCAB_FILE
     from text_pipeline.chunking import DEFAULT_MAX_CHARS, normalize_for_f5
     from text_pipeline.pipeline import preprocess_text
     from text_pipeline.sanitize import sanitize_for_vivoice
@@ -221,14 +249,26 @@ def preview_text(gen_text, llm_normalize, ollama_model, ollama_url, llm_api_key)
                 llm_api_key=llm_api_key.strip(),
             )
             sanitized = sanitize_for_vivoice(normalized, VOCAB_FILE)
-            chunks = normalize_for_f5(sanitized, max_chars=DEFAULT_MAX_CHARS)
+            chunks, paragraph_break_after = normalize_for_f5(
+                sanitized, max_chars=DEFAULT_MAX_CHARS,
+                llm_model=ollama_model.strip() if llm_normalize else None,
+                ollama_url=ollama_url.strip(), llm_api_key=llm_api_key.strip(),
+            )
     except Exception as e:
         return "", f"❌ Lỗi khi chuẩn hóa: {e}", gr.update(value="", visible=False)
 
-    preview = "\n\n".join(f"[{i + 1}/{len(chunks)}] {c}" for i, c in enumerate(chunks))
+    preview_lines = []
+    for i, c in enumerate(chunks):
+        preview_lines.append(f"[{i + 1}/{len(chunks)}] {c}")
+        if i in paragraph_break_after:
+            preview_lines.append(f"— ⏸ nghỉ {PARAGRAPH_SILENCE_SEC}s (ranh giới đoạn văn) —")
+    preview = "\n\n".join(preview_lines)
 
     warnings, stats = _extract_warnings_and_stats(tee.getvalue())
-    stats_parts = [f"📦 {len(chunks)} đoạn (≤{DEFAULT_MAX_CHARS} ký tự/đoạn — đúng như lúc tổng hợp thật)"]
+    stats_parts = [
+        f"📦 {len(chunks)} đoạn (≤{DEFAULT_MAX_CHARS} ký tự/đoạn — đúng như lúc tổng hợp thật), "
+        f"{len(paragraph_break_after)} ranh giới đoạn văn"
+    ]
     if stats:
         stats_parts.append(stats)
     stats_line = " · ".join(stats_parts)

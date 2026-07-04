@@ -1,0 +1,9 @@
+# Ép LF cho shell script — bắt buộc, nếu không core.autocrlf=true trên Windows
+# sẽ tự CRLF-hóa lại khi checkout, baked vào Docker image gây lỗi
+# "/usr/bin/env: 'bash\r': No such file or directory" khi container khởi động
+# (đã xảy ra thật với docker-entrypoint.sh — xem README mục "Deploy bằng Docker").
+*.sh text eol=lf
+
+# Dockerfile/compose cũng nên LF cho nhất quán, dù không có shebang nên ít rủi ro hơn.
+Dockerfile* text eol=lf
+docker-compose*.yml text eol=lf

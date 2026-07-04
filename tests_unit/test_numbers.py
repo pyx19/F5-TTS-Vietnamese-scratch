@@ -19,7 +19,8 @@ class TestNormalizeNumbers(unittest.TestCase):
         self.assertIn("900 mbps", normalize_numbers("Tốc độ 900Mbps"))
 
     def test_24_7(self):
-        self.assertIn("hai mươi tư bảy", normalize_numbers("Vận hành 24/7"))
+        # Không còn xử lý đặc biệt — rơi xuống rule tỷ lệ chung, nhất quán với "39/40"
+        self.assertIn("24 trên 7", normalize_numbers("Vận hành 24/7"))
 
     def test_mobile_gen(self):
         result = normalize_numbers("Mạng 5G mới")
@@ -39,12 +40,14 @@ class TestNormalizeNumbers(unittest.TestCase):
         self.assertEqual(normalize_numbers("10.000 tỷ đồng"), "10000 tỷ đồng")
 
     def test_doc_code_split(self):
+        # Số phẩy-ngăn-cách (nghỉ hơi thay vì đọc "gạch chéo"); mã "QH15" SPELL kiểu
+        # Việt ("quy hát"), không dịch nghĩa thành "quốc hội" (đây là mã định danh).
         result = normalize_numbers("văn bản 57/2022/QH15")
-        self.assertIn("57 2022 QH 15", result)
+        self.assertIn("57, 2022, quy hát 15", result)
 
     def test_doc_code_split_dash(self):
         result = normalize_numbers("Nghị quyết 36-NQ/TW")
-        self.assertIn("36 NQ TW", result)
+        self.assertIn("36, nờ quy tê vê kép", result)
 
     def test_roman_numeral_quarter(self):
         # IV -> "tư" (theo cách gọi tự nhiên "quý tư"), không phải "bốn"
@@ -97,7 +100,7 @@ class TestNormalizeNumbers(unittest.TestCase):
 
     def test_doc_code_and_date_combined(self):
         result = normalize_numbers("Nghị định số 64/2007/NĐ-CP ngày 15/03/2024.")
-        self.assertIn("64 2007 NĐ CP", result)
+        self.assertIn("64, 2007, nờ đê xê pê", result)
         self.assertIn("ngày 15 tháng 3 năm 2024", result)
 
     def test_invalid_date_falls_back_unchanged(self):
@@ -113,6 +116,38 @@ class TestNormalizeNumbers(unittest.TestCase):
         # Không phải năm 4 chữ số -> không đụng vào (tránh nhầm ID/số điện thoại)
         result = normalize_numbers("Trang 10-15 của tài liệu.")
         self.assertNotIn("đến", result)
+
+    def test_doc_code_mixed_case_and_multiple_letters(self):
+        # "TTr-BTTTT" — chữ "r" thường trong "TTr" vẫn phải được spell đầy đủ,
+        # không bị rớt/lẫn với "BTTTT" (8 chữ cái tổng cộng: T,T,r,B,T,T,T,T)
+        result = normalize_numbers("Tờ trình số 102/TTr-BTTTT.")
+        self.assertIn("102, tê tê rờ bê tê tê tê tê", result)
+
+    def test_doc_code_bare_qh_with_digits(self):
+        result = normalize_numbers("Quốc hội khóa QH15 đã thông qua.")
+        self.assertIn("quy hát 15", result)
+
+    def test_doc_code_leading_zero_preserved(self):
+        # "07" là mã định danh, số 0 đầu CÓ ý nghĩa — phải đọc "không bảy",
+        # không phải "bảy" (mất số 0 nếu để vi_numbers() xử lý như giá trị số).
+        result = normalize_numbers("Mã số văn bản 07/2024/QH15.")
+        self.assertIn("không bảy, 2024", result)
+
+    def test_doc_code_no_leading_zero_unaffected(self):
+        # Số không có số 0 đầu vẫn giữ nguyên dạng số (để vi_numbers() xử lý sau)
+        result = normalize_numbers("Nghị định số 64/2007/NĐ-CP.")
+        self.assertIn("64, 2007,", result)
+
+    def test_doc_code_trailing_pause_after_code_ends(self):
+        # Nghỉ hơi NGAY SAU khi mã đọc xong, KHÔNG ở giữa mã (giữa NQ và TW).
+        result = normalize_numbers("Nghị quyết 36-NQ/TW ngày 01 tháng 7 năm 2014.")
+        self.assertIn("vê kép, ngày", result)
+        self.assertNotIn("tê, vê kép", result)
+
+    def test_doc_code_no_double_comma_before_existing_punctuation(self):
+        # Mã đứng ngay trước dấu câu khác trong text gốc -> không tạo ",," hay ",."
+        self.assertNotIn(",,", normalize_numbers("Báo cáo số 45/BC-BTP,"))
+        self.assertNotIn(",.", normalize_numbers("Báo cáo số 45/BC-BTP."))
 
 
 class TestViNumbers(unittest.TestCase):

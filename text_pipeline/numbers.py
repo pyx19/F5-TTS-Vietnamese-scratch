@@ -9,7 +9,7 @@ numbers nữa — chỉ còn phải xử lý viết tắt/ký hiệu chữ.
 
 import re
 
-from .letters import EN_LETTER
+from .letters import EN_LETTER, spell_vn_letters
 
 QUARTER_VI = {1: "một", 2: "hai", 3: "ba", 4: "bốn"}
 
@@ -94,23 +94,81 @@ def _ratio(m: re.Match) -> str:
     return f"{m.group(1)} trên {m.group(2)}"
 
 
+_DOC_CODE_SLASH_RE = re.compile(
+    r"\b(\d{1,4}(?:/\d{2,4})*)/([A-ZĐĂÂ][A-Za-zĐĂÂđăâ0-9\-/]*)\b"
+)
+_DOC_CODE_DASH_RE = re.compile(
+    r"\b(\d{1,4})-([A-ZĐĂÂ][A-Za-zĐĂÂđăâ0-9\-/]*)\b"
+)
+_TRAILING_DIGITS_RE = re.compile(r"^([^\d]*)(\d*)$")
+
+_DIGIT_VI = {
+    "0": "không", "1": "một", "2": "hai", "3": "ba", "4": "bốn",
+    "5": "năm", "6": "sáu", "7": "bảy", "8": "tám", "9": "chín",
+}
+
+
+def _format_number_segment(n: str) -> str:
+    """
+    Số trong mã văn bản là MÃ ĐỊNH DANH, không phải giá trị số học — nếu có số 0
+    đứng đầu (vd "07" trong "07/2024/QH15"), số 0 đó CÓ Ý NGHĨA (phân biệt với "7")
+    và phải giữ lại, đọc từng chữ số ("không bảy"). Nếu để vi_numbers() xử lý bình
+    thường ở bước sau, "07" sẽ bị hiểu là giá trị 7 và mất số 0 đầu.
+    Số không có số 0 đầu (vd "64", "2007") giữ nguyên dạng số, vi_numbers() xử lý
+    bình thường ở bước sau.
+    """
+    if len(n) > 1 and n[0] == "0":
+        return " ".join(_DIGIT_VI[d] for d in n)
+    return n
+
+
+def _format_doc_code(numbers_part: str, code_part: str) -> str:
+    """
+    numbers_part: các số cách nhau bởi "/", vd "64/2007" hoặc "57".
+    code_part: phần ký hiệu, vd "NĐ-CP", "NQ/TW", "TTr-BTTTT", "QH15".
+
+    Trả về các số + mã, NGĂN CÁCH BẰNG DẤU PHẨY (nghỉ hơi thay vì đọc "gạch chéo"/
+    "gạch ngang"); phần chữ trong mã được SPELL theo tên chữ cái tiếng Việt (không
+    dịch ra ngữ nghĩa — "NĐ-CP" là một MÃ ĐỊNH DANH, không phải cụm từ cần hiểu
+    nghĩa). Số dính liền cuối mã (vd "15" trong "QH15") được giữ lại dạng số, xử lý
+    bình thường bởi vi_numbers() ở bước sau (trừ khi có số 0 đầu — xem _format_number_segment).
+    """
+    numbers = [_format_number_segment(n) for n in numbers_part.split("/") if n]
+    code_clean = code_part.replace("/", "").replace("-", "")
+    m = _TRAILING_DIGITS_RE.match(code_clean)
+    letters, trailing_digits = (m.group(1), m.group(2)) if m else (code_clean, "")
+    spelled = spell_vn_letters(letters)
+    trailing_digits = _format_number_segment(trailing_digits) if trailing_digits else trailing_digits
+    code_out = f"{spelled} {trailing_digits}".strip()
+    # Dấu phẩy CUỐI CÙNG (sau khi mã đã đọc xong) — tạo 1 nghỉ nhẹ trước khi câu
+    # tiếp tục (vd trước "ngày 01 tháng 7..."), KHÔNG chèn nghỉ ở giữa mã (mã phải
+    # đọc liền một mạch, không ngắt giữa "NQ" và "TW"). Dọn double-punctuation nếu
+    # mã này vốn đã đứng ngay trước dấu câu khác trong text gốc (vd "...BTP," hay
+    # "...BTP.") — xem cleanup ở normalize_numbers().
+    return ", ".join(numbers + [code_out]) + ","
+
+
 def _normalize_doc_codes(text: str) -> str:
     """
-    Chuẩn hóa mã văn bản pháp luật VN — tách / và - bằng dấu cách.
-      57/2022/QH15   → 57 2022 QH 15
-      64/2007/NĐ-CP  → 64 2007 NĐ CP
-      36-NQ/TW       → 36 NQ TW
+    Chuẩn hóa mã văn bản pháp luật VN — đây là MÃ ĐỊNH DANH (như số hiệu sản phẩm),
+    không phải cụm từ tiếng Việt viết tắt cần dịch nghĩa. Ngăn cách bằng dấu phẩy
+    (nghỉ hơi) thay vì đọc "gạch chéo"/"gạch ngang", và SPELL từng chữ cái kiểu Việt
+    thay vì mở rộng ngữ nghĩa (khác với viết tắt đứng riêng như "UBND", "QĐ" — những
+    từ đó vẫn được acronyms.py dịch nghĩa bình thường vì chúng đóng vai trò từ trong
+    câu, không phải mã định danh):
+      57/2022/QH15   → 57, 2022, quy hát 15
+      64/2007/NĐ-CP  → 64, 2007, nờ đê xê pê
+      36-NQ/TW       → 36, nờ quy tê vê kép
+      102/TTr-BTTTT  → 102, tê tê rờ bê tê tê tê tê
     """
-
-    def _split(m: re.Match) -> str:
-        return re.sub(r"[/\-]", " ", m.group()).strip()
-
-    text = re.sub(
-        r"\b\d{1,4}(?:/\d{2,4})?/[A-ZĐĂÂ][A-ZĐĂÂa-z0-9]*(?:-[A-ZĐĂÂa-z0-9]+)*\b",
-        _split, text,
-    )
-    text = re.sub(r"\b\d{1,4}-[A-ZĐĂÂ]{2,}/[A-ZĐĂÂ]{2,}\b", _split, text)
-    text = re.sub(r"\bQH(\d+)\b", r"QH \1", text)
+    text = _DOC_CODE_SLASH_RE.sub(lambda m: _format_doc_code(m.group(1), m.group(2)), text)
+    text = _DOC_CODE_DASH_RE.sub(lambda m: _format_doc_code(m.group(1), m.group(2)), text)
+    # "QH15" đứng một mình, không có số hiệu văn bản đứng trước (vd "khóa QH15")
+    text = re.sub(r"\bQH(\d+)\b", lambda m: f"{spell_vn_letters('QH')} {m.group(1)}", text)
+    # Dọn double-punctuation: _format_doc_code() luôn thêm dấu phẩy cuối mã, nếu
+    # mã đó vốn đứng ngay trước 1 dấu câu khác trong text gốc (vd "...BTP," hay
+    # "...BTP.") thì giữ dấu câu MẠNH HƠN, bỏ dấu phẩy thừa.
+    text = re.sub(r",\s*([.!?;:,])", r"\1", text)
     return text
 
 
@@ -121,11 +179,12 @@ def normalize_numbers(text: str, dbg=None) -> str:
     Khi không có LLM, chạy như bước preprocessing chính.
 
     Thứ tự quan trọng (đặc thù → tổng quát):
-      1. 24/7
+      1. (bỏ — 24/7 nay xử lý chung với rule tỷ lệ ở bước 4.5)
       2. Mobile gen (5G, 4G)
-      3. Mã văn bản pháp luật
+      3. Mã văn bản pháp luật (số phẩy-ngăn-cách + mã SPELL kiểu Việt, không dịch nghĩa)
       4. Số La Mã (quý/điều/chương)
-      4.5. Ngày/tháng/năm (DD/MM/YYYY, DD/MM) và tỷ lệ N/M (39/40 → 39 trên 40)
+      4.5. Ngày/tháng/năm (DD/MM/YYYY, DD/MM) và tỷ lệ N/M (39/40 → 39 trên 40,
+           24/7 → 24 trên 7)
       4.6. Khoảng năm: 2021-2025 → 2021 đến 2025
       5. ms (trước rule đơn vị storage để tránh nhầm M/S)
       6. Đơn vị storage: TB/GB/MB/KB  → lowercase (TTS đọc letter-by-letter)
@@ -140,8 +199,9 @@ def normalize_numbers(text: str, dbg=None) -> str:
     """
     before = text
 
-    # 1. 24/7 — negative lookahead để không nuốt mất ngày tháng dạng "24/7/2024"
-    text = re.sub(r"\b24\s*/\s*7\b(?!\s*/)", "hai mươi tư bảy", text)
+    # 1. "24/7" KHÔNG còn xử lý đặc biệt — rơi xuống rule tỷ lệ chung (bước 4.5)
+    # để nhất quán với các tỷ lệ khác: "24/7" → "24 trên 7" (không phải "24 7" đọc
+    # dính liền không có từ nối).
 
     # 2. Mobile generation
     text = re.sub(r"\b([2-5])G\b", lambda m: f"{MOBILE_GEN[m.group(1)]} {EN_LETTER['G']}", text)

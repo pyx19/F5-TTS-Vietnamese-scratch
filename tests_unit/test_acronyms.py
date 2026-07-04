@@ -31,6 +31,16 @@ class TestAcronyms(unittest.TestCase):
         result = expand_acronyms_fallback("nghị quyết số ba mươi sáu nq tw ngày một")
         self.assertIn("nghị quyết trung ương", result)
 
+    def test_new_entries_from_reference_list(self):
+        # Bổ sung từ 20260701_Danh_sach_tu_viet_tat.xlsx
+        self.assertIn("phó tổng giám đốc", expand_acronyms_fallback("PTGĐ đã ký duyệt"))
+        self.assertIn("tổng công ty", expand_acronyms_fallback("TCT báo cáo kết quả"))
+        self.assertIn("công nghệ thông tin", expand_acronyms_fallback("phòng CNTT"))
+        self.assertIn("về việc", expand_acronyms_fallback("V/v triển khai kế hoạch"))
+
+    def test_multiword_key_with_space(self):
+        self.assertIn("quân chủng phòng không không quân", expand_acronyms_fallback("thuộc QC PKKQ"))
+
 
 if __name__ == "__main__":
     unittest.main()

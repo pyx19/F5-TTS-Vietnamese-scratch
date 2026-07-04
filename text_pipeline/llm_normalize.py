@@ -1,11 +1,16 @@
 """
-Bước 3/4 — LLM normalize: Qwen xử lý viết tắt + context-aware decisions.
+Bước 3/4 — LLM normalize: Qwen xử lý viết tắt kỹ thuật + quyết định theo ngữ cảnh.
 
 Thiết kế (sau phân tích lỗi thực tế trên văn bản hành chính + kỹ thuật):
   - Số được xử lý TRƯỚC LLM bằng rule-based (xem numbers.py) → loại bỏ điểm yếu
     lớn nhất của Qwen2.5-3B: hallucinate khi phải xử lý số phức tạp
     (vd "15.5 tỷ USD" → LLM tự bịa "15% 50 triệu").
-  - LLM chỉ còn nhiệm vụ: viết tắt + quyết định theo ngữ cảnh.
+  - Viết tắt hành chính (UBND, QĐ, NQ...) cũng được xử lý TRƯỚC LLM bằng
+    ACRONYM_DICT cứng (xem acronyms.py + pipeline.py) — cùng lý do: Qwen2.5:3B
+    đôi khi "sửa" sai một viết tắt đã có nghĩa rõ ràng, không nhất quán, và vì
+    ACRONYM_DICT chạy sau khi kết quả LLM đã cố định nên fallback cũ KHÔNG sửa lại
+    được nếu LLM đã biến dạng text gốc. Chuyển lên trước LLM để loại hẳn rủi ro này.
+  - LLM chỉ còn nhiệm vụ: viết tắt KỸ THUẬT (tiếng Anh) + quyết định theo ngữ cảnh.
   - Bảng chữ cái inject từ letters.EN_LETTER → không bao giờ mâu thuẫn với code.
   - temperature=0 cho deterministic output.
   - Kết quả được cache theo diskcache (Bước 8) để giảm latency với văn bản lặp.
@@ -32,19 +37,15 @@ QUAN TRỌNG: Mọi số trong câu ĐÃ được chuyển thành chữ trước
 ━━━ NGUYÊN TẮC ━━━
 
 [A] PHÂN TÍCH NGỮ CẢNH TRƯỚC KHI XỬ LÝ:
-  • Văn bản kỹ thuật/công nghệ → viết tắt thường là tiếng Anh (AI, CPU, API, SDK, IT, LLM)
-  • Văn bản hành chính/pháp luật → viết tắt thường là tiếng Việt (QĐ, NĐ, UBND, HĐND)
+  • Câu đưa vào ĐÃ được xử lý sẵn viết tắt hành chính tiếng Việt (quyết định, ủy
+    ban nhân dân, nghị định, thông tư, nghị quyết, chỉ thị, thành phố, trung
+    ương, chính phủ, quốc hội, giáo sư, phó giáo sư, tiến sĩ, thạc sĩ, bác sĩ,
+    kỹ sư, cử nhân...) — đây LÀ KẾT QUẢ ĐÚNG, GIỮ NGUYÊN, không dịch ngược lại
+    thành viết tắt, không diễn giải lại, không paraphrase.
+  • Việc còn lại của bạn là viết tắt KỸ THUẬT/TIẾNG ANH (AI, CPU, API, SDK, IT, LLM)
   • Từ tiếng Việt in hoa (TỈNH, THÀNH PHỐ, VIỆT NAM) → viết thường, KHÔNG spell từng chữ
-  • Cùng một viết tắt (BS, TT, CV) → dùng context câu để quyết định
 
-[B] VIẾT TẮT TIẾNG VIỆT HÀNH CHÍNH → expand thành từ đầy đủ tiếng Việt:
-  QĐ→"quyết định"  NĐ→"nghị định"  TT→"thông tư"  NQ→"nghị quyết"  CT→"chỉ thị"
-  UBND→"ủy ban nhân dân"  HĐND→"hội đồng nhân dân"  MTTQ→"mặt trận tổ quốc"
-  TP→"thành phố"  TW→"trung ương"  CP→"chính phủ"  QH→"quốc hội"
-  GS→"giáo sư"  PGS→"phó giáo sư"  TS→"tiến sĩ"  ThS→"thạc sĩ"
-  BS→"bác sĩ" (ngữ cảnh y tế)  KS→"kỹ sư"  CN→"cử nhân"
-
-[C] VIẾT TẮT TIẾNG ANH KỸ THUẬT → phiên âm từng chữ cái ĐÚNG theo bảng sau:
+[B] VIẾT TẮT TIẾNG ANH KỸ THUẬT → phiên âm từng chữ cái ĐÚNG theo bảng sau:
   Bảng tên chữ cái Anh-Mỹ (BẮT BUỘC dùng đúng bảng này, KHÔNG được suy đoán):
   {letter_table}
 
@@ -65,25 +66,25 @@ QUAN TRỌNG: Mọi số trong câu ĐÃ được chuyển thành chữ trước
 
   Ngoại lệ (đọc như từ, không spell): COVID→"cô vít"  NATO→"na tô"  ASEAN→"a xê an"
 
-[D] VIẾT TẮT MIXED-CASE → phiên âm từng chữ theo bảng [C]:
+[C] VIẾT TẮT MIXED-CASE → phiên âm từng chữ theo bảng [B]:
   SaaS→"ét ây ây ét"   IoT→"ai âu ti"   OAuth→"âu âu ếch"
   ChatGPT→"Chat gờ pi ti"   DevOps→"DevOps" (đọc tự nhiên)
 
-[E] TÊN SẢN PHẨM MIXED ALPHANUMERIC → spell chữ + giữ nguyên số:
+[D] TÊN SẢN PHẨM MIXED ALPHANUMERIC → spell chữ + giữ nguyên số:
   RTX 4090→"a rờ ti ích 4090"   GPT-4o→"gờ pi ti 4o"
   M2 Pro→"em 2 pro"              F5-TTS→"ép 5 ti ti ét"
 
-[F] SỐ VÀ ĐƠN VỊ — ĐÃ ĐƯỢC XỬ LÝ TRƯỚC, KHÔNG THAY ĐỔI:
+[E] SỐ VÀ ĐƠN VỊ — ĐÃ ĐƯỢC XỬ LÝ TRƯỚC, KHÔNG THAY ĐỔI:
   Tất cả số trong câu đã được rule-based xử lý. Nhiệm vụ của bạn là KHÔNG đụng vào số.
   • "mười lăm phẩy năm tỷ đô la" → giữ nguyên, KHÔNG đổi thành "phần trăm"
   • "hai trăm ms" → giữ nguyên
   • Đơn vị lowercase còn lại (gb, ghz, mbps) → giữ nguyên
 
-[G] CỤM TỪ KỸ THUẬT CÓ GẠCH NGANG → bỏ gạch ngang:
+[F] CỤM TỪ KỸ THUẬT CÓ GẠCH NGANG → bỏ gạch ngang:
   End-to-end→"end to end"   Text-to-Speech→"text to speech"   fine-tuning→"fine tuning"
 
-[H] GIỮ NGUYÊN — KHÔNG thay đổi, KHÔNG dịch:
-  • Tiếng Việt thông thường
+[G] GIỮ NGUYÊN — KHÔNG thay đổi, KHÔNG dịch:
+  • Tiếng Việt thông thường, kể cả cụm hành chính đã mở rộng sẵn (xem mục [A])
   • Thuật ngữ kỹ thuật ghép (KHÔNG dịch sang Việt):
     On-premise (KHÔNG dịch thành "trên premises")
     Cloud API (KHÔNG tách, KHÔNG đổi thứ tự)
@@ -109,8 +110,10 @@ Kết quả: "Điều này giúp tối ưu hóa a rờ âu ai lên đến bốn 
 Câu: "Với tốc độ CAGR đạt hai mươi hai phẩy bốn phần trăm, các SaaS platform sẽ phủ sóng rộng."
 Kết quả: "Với tốc độ xi ây gờ a rờ đạt hai mươi hai phẩy bốn phần trăm, các ét ây ây ét platform sẽ phủ sóng rộng."
 
-Câu: "Theo QĐ 15/2023 của UBND tỉnh, hệ thống AI sẽ deploy trên GPU RTX 4090 với hai mươi bốn gb VRAM."
-Kết quả: "Theo quyết định 15/2023 của ủy ban nhân dân tỉnh, hệ thống ây ai sẽ deploy trên gờ pi iu a rờ ti ích 4090 với hai mươi bốn gb vi a rờ ây em."
+Câu: "Theo quyết định mười lăm năm hai nghìn không trăm hai mươi ba của ủy ban nhân dân tỉnh, hệ thống AI sẽ deploy trên GPU RTX 4090 với hai mươi bốn gb VRAM."
+Kết quả: "Theo quyết định mười lăm năm hai nghìn không trăm hai mươi ba của ủy ban nhân dân tỉnh, hệ thống ây ai sẽ deploy trên gờ pi iu a rờ ti ích 4090 với hai mươi bốn gb vi a rờ ây em."
+# Chú ý: "quyết định", "ủy ban nhân dân" GIỮ NGUYÊN — đã được xử lý sẵn trước khi
+# tới bạn, KHÔNG được đổi lại thành "QĐ"/"UBND" hay diễn giải khác đi.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

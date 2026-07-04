@@ -16,6 +16,11 @@
 #
 # Sửa code xong:
 #   docker compose -f docker-compose.deps-only.yml restart
+#
+# LƯU Ý: image phucvh145/f5tts-vi:cu121-deps-only đã push trước đó bị baked
+# docker-entrypoint.sh với CRLF (build trên Windows) — container crash ngay khi
+# start với lỗi "/usr/bin/env: 'bash\r': No such file or directory". Đã fix bằng
+# volume mount đè /docker-entrypoint.sh ở dưới, không cần rebuild/re-push image.
 # ============================================================
 
 services:
@@ -54,6 +59,16 @@ services:
       # ngoài đường dẫn code, vd ổ đĩa khác):
       # - /path/to/output:/app/tests
 
+      # Ghi đè /docker-entrypoint.sh đã baked trong image cu121-deps-only (image
+      # này được build lúc docker-entrypoint.sh còn CRLF trên máy Windows — Linux
+      # không chạy được shebang "#!/usr/bin/env bash\r", lỗi
+      # "/usr/bin/env: 'bash\r': No such file or directory" ngay khi container
+      # start). File trong repo đã fix về LF (xem .gitattributes) — mount đè lên
+      # để dùng bản đã fix mà KHÔNG cần rebuild lại image ~10GB. Nếu build lại
+      # image từ đầu (image mới không còn dính bug này) thì dòng mount này thành
+      # dư thừa nhưng vô hại (mount đúng nội dung y hệt đã baked).
+      - ./docker-entrypoint.sh:/docker-entrypoint.sh:ro
+
     environment:
       HF_HUB_OFFLINE: "1"
       TRANSFORMERS_OFFLINE: "1"
@@ -75,8 +90,6 @@ services:
       OLLAMA_URL: "http://YOUR_LLM_HOST:PORT/v1"
       OLLAMA_MODEL: "your-model-name"
       LLM_API_KEY: ""
-
-    restart: unless-stopped
 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7860/"]

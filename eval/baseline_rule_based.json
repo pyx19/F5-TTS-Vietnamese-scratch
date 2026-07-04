@@ -27,7 +27,7 @@
     "id": "num05",
     "category": "numbers_units",
     "text": "Căn cứ văn bản số 123/QĐ-TTg về việc phê duyệt chủ trương đầu tư.",
-    "normalized": "căn cứ văn bản số một trăm hai mươi ba quyết định thủ tướng chính phủ về việc phê duyệt chủ trương đầu tư."
+    "normalized": "căn cứ văn bản số một trăm hai mươi ba, quy đê tê tê gờ, về việc phê duyệt chủ trương đầu tư."
   },
   {
     "id": "num06",
@@ -51,7 +51,7 @@
     "id": "num09",
     "category": "numbers_units",
     "text": "Trung tâm dữ liệu vận hành liên tục 24/7 để đảm bảo dịch vụ không gián đoạn.",
-    "normalized": "trung tâm dữ liệu vận hành liên tục hai mươi tư bảy để đảm bảo dịch vụ không gián đoạn."
+    "normalized": "trung tâm dữ liệu vận hành liên tục hai mươi tư trên bảy để đảm bảo dịch vụ không gián đoạn."
   },
   {
     "id": "num10",
@@ -93,7 +93,13 @@
     "id": "num16",
     "category": "numbers_units",
     "text": "Căn cứ Nghị định số 64/2007/NĐ-CP ngày 15/03/2024 của Chính phủ.",
-    "normalized": "căn cứ nghị định số sáu mươi tư hai nghìn không trăm lẻ bảy nghị định chính phủ ngày mười lăm tháng ba năm hai nghìn không trăm hai mươi tư của chính phủ."
+    "normalized": "căn cứ nghị định số sáu mươi tư, hai nghìn không trăm lẻ bảy, nờ đê xê pê, ngày mười lăm tháng ba năm hai nghìn không trăm hai mươi tư của chính phủ."
+  },
+  {
+    "id": "num17",
+    "category": "numbers_units",
+    "text": "Quốc hội khóa QH15 đã thông qua nhiều nghị quyết quan trọng.",
+    "normalized": "quốc hội khóa quy hát mười lăm đã thông qua nhiều nghị quyết quan trọng."
   },
   {
     "id": "admin01",
@@ -105,7 +111,7 @@
     "id": "admin02",
     "category": "admin_abbrev",
     "text": "Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị.",
-    "normalized": "căn cứ nghị quyết số ba mươi sáu nghị quyết trung ương ngày một tháng bảy năm hai nghìn không trăm mười bốn của bộ chính trị."
+    "normalized": "căn cứ nghị quyết số ba mươi sáu, nờ quy tê vê kép, ngày một tháng bảy năm hai nghìn không trăm mười bốn của bộ chính trị."
   },
   {
     "id": "admin03",
@@ -123,7 +129,7 @@
     "id": "admin05",
     "category": "admin_abbrev",
     "text": "Nghị định số 64/2007/NĐ-CP quy định chi tiết về ứng dụng công nghệ thông tin.",
-    "normalized": "nghị định số sáu mươi tư hai nghìn không trăm lẻ bảy nghị định chính phủ quy định chi tiết về ứng dụng công nghệ thông tin."
+    "normalized": "nghị định số sáu mươi tư, hai nghìn không trăm lẻ bảy, nờ đê xê pê, quy định chi tiết về ứng dụng công nghệ thông tin."
   },
   {
     "id": "admin06",
@@ -153,19 +159,31 @@
     "id": "admin10",
     "category": "admin_abbrev",
     "text": "Xét đề nghị tại Tờ trình số 102/TTr-BTTTT và Báo cáo số 45/BC-BTP.",
-    "normalized": "xét đề nghị tại tờ trình số một trăm lẻ hai tờ trình bi ti ti ti ti và báo cáo số bốn mươi lăm báo cáo bi ti pi."
+    "normalized": "xét đề nghị tại tờ trình số một trăm lẻ hai, tê tê rờ bê tê tê tê tê, và báo cáo số bốn mươi lăm, bê xê bê tê pê."
   },
   {
     "id": "admin11",
     "category": "admin_abbrev",
     "text": "Quốc hội đã thông qua Nghị quyết số 57/2022/QH15 về đầu tư dự án trọng điểm.",
-    "normalized": "quốc hội đã thông qua nghị quyết số năm mươi bảy hai nghìn không trăm hai mươi hai quốc hội mười lăm về đầu tư dự án trọng điểm."
+    "normalized": "quốc hội đã thông qua nghị quyết số năm mươi bảy, hai nghìn không trăm hai mươi hai, quy hát mười lăm, về đầu tư dự án trọng điểm."
   },
   {
     "id": "admin12",
     "category": "admin_abbrev",
     "text": "Điều 1 Chương II quy định rõ trách nhiệm của các bên liên quan tại Điều 3.",
     "normalized": "điều một chương hai quy định rõ trách nhiệm của các bên liên quan tại điều ba."
+  },
+  {
+    "id": "admin13",
+    "category": "admin_abbrev",
+    "text": "PTGĐ và TGĐ đã họp bàn về kế hoạch chuyển đổi số của TCT theo chỉ đạo của BCĐ.",
+    "normalized": "phó tổng giám đốc và tổng giám đốc đã họp bàn về kế hoạch chuyển đổi số của tổng công ty theo chỉ đạo của ban chỉ đạo."
+  },
+  {
+    "id": "admin14",
+    "category": "admin_abbrev",
+    "text": "V/v triển khai kế hoạch CNTT theo yêu cầu của phòng NS và phòng KH.",
+    "normalized": "về việc triển khai kế hoạch công nghệ thông tin theo yêu cầu của phòng nhân sự và phòng kế hoạch."
   },
   {
     "id": "tech01",
@@ -273,7 +291,7 @@
     "id": "code06",
     "category": "code_switching",
     "text": "Ứng dụng trí tuệ nhân tạo tạo sinh (Generative AI) đang được thử nghiệm rộng rãi.",
-    "normalized": "ứng dụng trí tuệ nhân tạo tạo sinh, generative ây ai, đang được thử nghiệm rộng rãi."
+    "normalized": "ứng dụng trí tuệ nhân tạo tạo sinh, generative ây ai; đang được thử nghiệm rộng rãi."
   },
   {
     "id": "code07",
@@ -285,13 +303,13 @@
     "id": "code08",
     "category": "code_switching",
     "text": "Trải nghiệm người dùng (User Experience - UX) là ưu tiên hàng đầu của đội thiết kế.",
-    "normalized": "trải nghiệm người dùng, user experience iu ích, là ưu tiên hàng đầu của đội thiết kế."
+    "normalized": "trải nghiệm người dùng, user experience, iu ích; là ưu tiên hàng đầu của đội thiết kế."
   },
   {
     "id": "code09",
     "category": "code_switching",
     "text": "Các \"ốc đảo dữ liệu\" (Data Silos) đang gây nghẽn mạch dòng chảy thông tin nội bộ.",
-    "normalized": "các ốc đảo dữ liệu, data silos, đang gây nghẽn mạch dòng chảy thông tin nội bộ."
+    "normalized": "các ốc đảo dữ liệu, data silos; đang gây nghẽn mạch dòng chảy thông tin nội bộ."
   },
   {
     "id": "code10",
@@ -315,7 +333,7 @@
     "id": "code13",
     "category": "code_switching",
     "text": "Dữ liệu cấu hình {status: active} đã được đồng bộ lên hệ thống trung tâm.",
-    "normalized": "dữ liệu cấu hình, status, active, đã được đồng bộ lên hệ thống trung tâm."
+    "normalized": "dữ liệu cấu hình, status, active; đã được đồng bộ lên hệ thống trung tâm."
   },
   {
     "id": "brand01",

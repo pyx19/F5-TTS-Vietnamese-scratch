@@ -29,3 +29,6 @@ gradio.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Dữ liệu nội bộ công ty (không phải mã nguồn, không nên public)
+/20260701_Danh_sach_tu_viet_tat.xlsx

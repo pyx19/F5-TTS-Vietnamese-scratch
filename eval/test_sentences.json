@@ -15,6 +15,7 @@
   {"id": "num14", "category": "numbers_units", "text": "Thời hạn hoàn thành hồ sơ trước ngày 30/6 theo kế hoạch đã đề ra."},
   {"id": "num15", "category": "numbers_units", "text": "Đơn vị đã hoàn thành đạt 39/40 chỉ tiêu được giao trong quý vừa qua."},
   {"id": "num16", "category": "numbers_units", "text": "Căn cứ Nghị định số 64/2007/NĐ-CP ngày 15/03/2024 của Chính phủ."},
+  {"id": "num17", "category": "numbers_units", "text": "Quốc hội khóa QH15 đã thông qua nhiều nghị quyết quan trọng."},
 
   {"id": "admin01", "category": "admin_abbrev", "text": "UBND tỉnh đã ban hành kế hoạch triển khai theo chỉ đạo của HĐND."},
   {"id": "admin02", "category": "admin_abbrev", "text": "Căn cứ Nghị quyết số 36-NQ/TW ngày 01 tháng 7 năm 2014 của Bộ Chính trị."},
@@ -28,6 +29,8 @@
   {"id": "admin10", "category": "admin_abbrev", "text": "Xét đề nghị tại Tờ trình số 102/TTr-BTTTT và Báo cáo số 45/BC-BTP."},
   {"id": "admin11", "category": "admin_abbrev", "text": "Quốc hội đã thông qua Nghị quyết số 57/2022/QH15 về đầu tư dự án trọng điểm."},
   {"id": "admin12", "category": "admin_abbrev", "text": "Điều 1 Chương II quy định rõ trách nhiệm của các bên liên quan tại Điều 3."},
+  {"id": "admin13", "category": "admin_abbrev", "text": "PTGĐ và TGĐ đã họp bàn về kế hoạch chuyển đổi số của TCT theo chỉ đạo của BCĐ."},
+  {"id": "admin14", "category": "admin_abbrev", "text": "V/v triển khai kế hoạch CNTT theo yêu cầu của phòng NS và phòng KH."},
 
   {"id": "tech01", "category": "tech_abbrev", "text": "Hệ thống AI và Machine Learning giúp CEO ra quyết định nhanh hơn."},
   {"id": "tech02", "category": "tech_abbrev", "text": "Generative AI đang phát triển mạnh trong lĩnh vực IT."},
