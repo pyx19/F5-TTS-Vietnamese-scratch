@@ -281,11 +281,7 @@ def preview_text(gen_text, llm_normalize, ollama_model, ollama_url, llm_api_key)
 # ── Build UI ─────────────────────────────────────────────────────────────────
 # Giọng mẫu có sẵn — chọn nhanh bằng radio thay vì phải tự upload/ghi âm.
 _VOICE_PRESETS = {
-    "👩 Nữ (mặc định)": {
-        "audio": str(BASE_DIR / "ref.wav") if (BASE_DIR / "ref.wav").exists() else None,
-        "text": "cả hai bên hãy cố gắng hiểu cho nhau",
-    },
-    "👨 Nam": {
+    "👨 Nam (mặc định)": {
         "audio": str(BASE_DIR / "sample_nam.wav") if (BASE_DIR / "sample_nam.wav").exists() else None,
         "text": (
             "Chào mọi người! Hôm nay mình sẽ review một ứng dụng cực kỳ hot giúp bạn "
@@ -293,8 +289,12 @@ _VOICE_PRESETS = {
             "tuyệt vời này nhé!"
         ),
     },
+    "👩 Nữ": {
+        "audio": str(BASE_DIR / "ref.wav") if (BASE_DIR / "ref.wav").exists() else None,
+        "text": "cả hai bên hãy cố gắng hiểu cho nhau",
+    },
 }
-_default_voice_name = "👩 Nữ (mặc định)"
+_default_voice_name = "👨 Nam (mặc định)"
 _default_ref = _VOICE_PRESETS[_default_voice_name]["audio"]
 _default_ref_text = _VOICE_PRESETS[_default_voice_name]["text"]
 
@@ -303,8 +303,8 @@ with gr.Blocks(title="F5-TTS Vietnamese") as demo:
     gr.Markdown(
         "**Model**: `hynt/F5-TTS-Vietnamese-ViVoice` — Zero-shot voice cloning, "
         "tiếng Việt + tiếng Anh trong một model duy nhất.\n\n"
-        "> Hệ thống đang dùng **giọng Nữ mặc định**. "
-        "Bấm **\"🎤 Thay đổi giọng nói\"** bên dưới để chọn giọng Nam có sẵn, "
+        "> Hệ thống đang dùng **giọng Nam mặc định**. "
+        "Bấm **\"🎤 Thay đổi giọng nói\"** bên dưới để chọn giọng Nữ có sẵn, "
         "hoặc upload/ghi âm giọng riêng."
     )
 
@@ -354,7 +354,7 @@ with gr.Blocks(title="F5-TTS Vietnamese") as demo:
             cfg_strength = gr.Slider(0.5, 5.0, value=2.8, step=0.1,
                                      label="CFG Strength (2.8 tối ưu cho mixed VI+EN)",
                                      info="Cao = bám sát text/giọng mẫu hơn nhưng dễ cứng. Thấp = tự nhiên hơn nhưng dễ trôi giọng.")
-            speed_val    = gr.Slider(0.5, 2.0, value=1.0, step=0.05,
+            speed_val    = gr.Slider(0.5, 2.0, value=0.9, step=0.05,
                                      label="Speed — tốc độ đọc")
 
     gen_text = gr.Textbox(
